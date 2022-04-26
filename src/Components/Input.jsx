@@ -89,6 +89,31 @@ const textInput = (props) => {
                 </NavLink>
             );
         break;
+        case ('textbutton'):
+            inputElement = (
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <button 
+                            onClick={props.clicked} 
+                            className="btn btn-outline-secondary" 
+                            type={props.type} id={props.id} name={props.name}
+                            >{props.labeled}
+                        </button>
+                    </div>
+                    <input type="text" className="form-control" onChange={props.changed} defaultValue={props.value} />
+                </div>
+            );
+        break;
+        case ('textlabel'):
+            inputElement = (
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">{props.labeled}</span>
+                    </div>
+                    <input type="text" className="form-control" onChange={props.changed} defaultValue={props.value} />
+                </div>
+            );
+        break;
         default:
             inputElement = <input
                 className="form-control form-control-sm"

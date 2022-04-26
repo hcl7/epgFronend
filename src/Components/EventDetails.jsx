@@ -1,8 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
-
-const imdbApiBaseUrl = 'https://imdb-api.com/en/API/SearchMovie/k_z9yeskhc/';
+import { imdbApiBaseUrl } from '../Config/RouterConfig';
+//const imdbApiBaseUrl = 'https://imdb-api.com/en/API/SearchMovie/k_z9yeskhc/';
 class EventDetails extends React.Component{
 
     state = {
@@ -24,7 +23,7 @@ class EventDetails extends React.Component{
     render(){
         return(
             <div className="container">
-                <img src={this.state.image} />
+                <input type="image" alt={'image from imdb'} src={this.state.image} />
             </div>
         );
     }

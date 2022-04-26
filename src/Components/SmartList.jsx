@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import Input from '../Components/Input';
 
 class SmartList extends Component {
     constructor() {
         super();
         this.state = {
             currentPage: 1,
-            viewPerPage: 8,
+            viewPerPage: 40,
             pageSize: 10,
             sortKey: '',
             op: '>'
@@ -50,6 +51,12 @@ class SmartList extends Component {
         this.setState({sortKey: key, op: this.state.op === '>' ? '<' : '>'});
     }
 
+    onChangeHandle = (evt) =>{
+        const value = evt.target.value;
+        this.setState({[evt.target.name]: value});
+        console.log(value);
+    }
+
     render() {
         const { currentPage, viewPerPage, pageSize } = this.state;
         const data = this.props.smartListContents;
@@ -86,7 +93,7 @@ class SmartList extends Component {
         });
         return (
             <div className='container'>
-                <table className="table table-bordered table-striped">
+                <table className="table table-bordered table-striped table-dark">
                     <thead>
                         <tr>
                             {this.props.smartListHeaders && Array.isArray(this.props.smartListHeaders) && this.props.smartListHeaders.map(slh => (
@@ -100,14 +107,167 @@ class SmartList extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedItems && Array.isArray(sortedItems) && sortedItems.map((slc, i) =>
-                            <tr key={i}>
-                                {Object.keys(slc).map((key, i) => (
-                                    this.props.smartListHeaders.some(header => header.key === key) ? <td key={i}>{slc[key]}</td> : null
+                        {sortedItems && Array.isArray(sortedItems) && sortedItems.map((slc, index) =>
+                            <tr key={index}>
+                                {Object.keys(slc.short_event_descriptor[1]).map((key, i) => (
+                                    this.props.smartListHeaders.some(header => header.key === key) ? 
+                                    <td key={i}>
+                                        <div className="container">
+                                            <div className="row">
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Id'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.evn.id}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Start Time'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.evn.start_time}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Duration'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.evn.duration}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Nibble one'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.content_descriptor.nibble1}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Nibble two'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.content_descriptor.nibble2}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Country code'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.parental_rating_descriptor.country_code}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Parental'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.parental_rating_descriptor.value}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Alb'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.short_event_descriptor[0].lang}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Short'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.short_event_descriptor[0][key]}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Eng'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.short_event_descriptor[1].lang}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Short'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.short_event_descriptor[1][key]}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Alb'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.extended_event_descriptor[0].lang}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Extended'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.extended_event_descriptor[0].text}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textlabel'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Eng'}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        value={slc.extended_event_descriptor[1].lang}
+                                                    />
+                                                </div>
+                                                <div className="col-sm">
+                                                    <Input
+                                                        elementType={'textbutton'}
+                                                        className={'btn btn-success'}
+                                                        labeled={'Extended'}
+                                                        type="button"
+                                                        id={'extened' + index}
+                                                        name={'extened' + index}
+                                                        clicked={(e, d) => this.props.clicked(slc.short_event_descriptor[1][this.props.where], index)}
+                                                        value={slc.extended_event_descriptor[1].text || this.props.content[index]}
+                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td> : null
                                 ))}
                                 <td>
                                     {this.props.action === 'navlink'? 
-                                    <NavLink className="btn btn-outline-info" to={this.props.view + '/' + slc[this.props.where]}>{this.props.actionLabel}</NavLink>
+                                    <NavLink className="btn btn-outline-info" to={this.props.view + '/' + slc.short_event_descriptor[1][this.props.where]}>{this.props.actionLabel}</NavLink>
                                     : this.props.action === 'button' ? 
                                     <button className="btn btn-outline-danger" onClick={(e) => this.props.clicked(slc[this.props.where])}>{this.props.actionLabel}</button>
                                     : null}
