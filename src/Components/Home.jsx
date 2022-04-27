@@ -149,16 +149,16 @@ class Home extends React.Component{
         return parental_rating_descriptor;
     }
 
-    onClickedHandle = (e,i) =>{
-        console.log("clicked!", e, i);
+    onClickedHandle = (e) =>{
+        console.log("clicked!", e);
         axios.get(imdbApiBaseUrl + e)
         .then(res => {
              this.setState({ 
-                 id: [...this.state.id, res.data.results[Object.keys(res.data.results)[0]].id],
-                 image: [...this.state.image,res.data.results[Object.keys(res.data.results)[0]].image]
+                 id: [...this.state.id, res.data.results[0]['id']],
+                 image: [...this.state.image,res.data.results[0].image]
              });
-             console.log(res.data.results)
-             console.log(res.data.results[Object.keys(res.data.results)[0]].id);
+             console.log("ALL: ",res.data)
+             console.log("Id: ",res.data.results[0].id);
          });
     }
 
@@ -167,6 +167,7 @@ class Home extends React.Component{
     }
 
     render(){
+        console.log("from state: ", this.state.id);
         const evn = this.getEvents();
         const short_event_descriptor = this.get_short_event_descriptor();
         const extended_event_descriptor = this.get_extended_event_descriptor();

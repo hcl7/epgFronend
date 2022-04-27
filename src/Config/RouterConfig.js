@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const slShort_event_descriptor = [
     // { label: 'Lang', key: 'lang' },
     { label: 'Title', key: 'name' },
@@ -8,6 +10,13 @@ export const slShort_event_descriptor = [
 ];
 
 export const imdbApiBaseUrl = 'https://imdb-api.com/en/API/SearchMovie/k_z9yeskhc/';
+
+export function apiGet(payload){
+  axios.get(imdbApiBaseUrl + payload)
+  .then(res => {
+       return res.data;
+   });
+}
 
 function Digits(num) {
     return num.toString().padStart(2, '0');

@@ -10,10 +10,15 @@ class SmartList extends Component {
             viewPerPage: 40,
             pageSize: 10,
             sortKey: '',
-            op: '>'
+            op: '>',
+            data: []
         }
         this.handleClick = this.handleClick.bind(this);
         this.onSortedItems = this.onSortedItems.bind(this);
+    }
+
+    componentDidMount(){
+        this.setState({data: this.props.smartListContents});
     }
 
     handleClick(event) {
@@ -58,8 +63,9 @@ class SmartList extends Component {
     }
 
     render() {
+        console.log(this.state.data);
         const { currentPage, viewPerPage, pageSize } = this.state;
-        const data = this.props.smartListContents;
+        const data = this.state.data;
 
         const indexOfLastData = currentPage * viewPerPage;
         const indexOfFirstData = indexOfLastData - viewPerPage;
@@ -256,7 +262,7 @@ class SmartList extends Component {
                                                         type="button"
                                                         id={'extened' + index}
                                                         name={'extened' + index}
-                                                        clicked={(e, d) => this.props.clicked(slc.short_event_descriptor[1][this.props.where], index)}
+                                                        clicked={(e, d) => this.props.clicked(slc.short_event_descriptor[1][this.props.where])}
                                                         value={slc.extended_event_descriptor[1].text || this.props.content[index]}
                                                         changed={(e) => this.props.changed(e.target.value)}
                                                     />
