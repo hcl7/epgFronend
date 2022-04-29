@@ -1,110 +1,188 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import Input from '../Components/Input';
+import XMLParser from 'react-xml-parser';
+import axios from '../Config/axios-baseUrl';
+import {slShort_event_descriptor} from '../Config/RouterConfig';
+import {imdbApiBaseUrl} from '../Config/RouterConfig';
+
+let epg = [];
+let id = {};
+let img = {};
 
 class SmartList extends Component {
     constructor() {
         super();
         this.state = {
-            currentPage: 1,
-            viewPerPage: 40,
-            pageSize: 10,
-            sortKey: '',
-            op: '>',
-            data: []
+            id: {},
+            image: {},
+            data: [],
         }
-        this.handleClick = this.handleClick.bind(this);
-        this.onSortedItems = this.onSortedItems.bind(this);
+        this.onChangeHandle = this.onChangeHandle.bind(this);
     }
 
-    componentDidMount(){
-        this.setState({data: this.props.smartListContents});
+    onChangeHandle = (evt, i) =>{
+        this.setState({[`short${i}`]: evt.target.value });
+        console.log("name: ", this.state);
     }
 
-    handleClick(event) {
-        this.setState({
-          currentPage: Number(event.target.id)
+    componentDidMount() {
+        axios.get('/Hits.xml', {
+           "Content-Type": "application/xml; charset=utf-8"
+        }).then(res => {
+            const jsonXml = new XMLParser().parseFromString(res.data);
+            this.setState({ 
+                data: jsonXml.getElementsByTagName('Event'), 
+            });
         });
     }
 
-    onNext = () => {
-        if(this.state.currentPage > Math.floor(this.props.smartListContents.length) / this.state.viewPerPage){
-            this.setState({currentPage: this.state.currentPage});
-        }
-        else {
-            this.setState({currentPage: this.state.currentPage + 1});
-        }
-    };
-    
-    onPrevious = () => {
-        if(this.state.currentPage < 2){
-            this.setState({currentPage: 1});
-        }
-        else {
-            this.setState({currentPage: this.state.currentPage - 1});
-        }
-    };
-    onBegin = () => {
-        this.setState({currentPage: 1});
+    getEvents(){
+        const event = [];
+        this.state.data.map((e) => (
+            event.push({
+                id: e.attributes.id, 
+                start_time: e.attributes.start_time,
+                duration: e.attributes.duration
+            })
+        ));
+        return event;
     }
 
-    onEnd = () => {
-        this.setState({currentPage: Math.floor(this.props.smartListContents.length) / this.state.viewPerPage});
+    get_short_event_descriptor(){
+        const short_event_descriptor = [];
+        this.state.data.map((e) => (
+            e.children.forEach((c) =>{
+                if(c.attributes.name !== undefined){
+                    short_event_descriptor.push({
+                        lang: c.attributes.lang,
+                        name: c.attributes.name
+                    })
+                }
+            })
+        ));
+        return short_event_descriptor;
     }
 
-    onSortedItems(key){
-        this.setState({sortKey: key, op: this.state.op === '>' ? '<' : '>'});
+    get_extended_event_descriptor(){
+        const extended_event_descriptor = [];
+        this.state.data.map((e) => (
+            e.children.forEach((c) =>{
+                c.children.forEach((d) =>{
+                    if(d.value !== undefined){
+                        extended_event_descriptor.push({
+                            lang: c.attributes.lang,
+                            text: d.value
+                        });
+                    }
+                });
+            })
+        ));
+        return extended_event_descriptor;
     }
 
-    onChangeHandle = (evt) =>{
-        const value = evt.target.value;
-        this.setState({[evt.target.name]: value});
-        console.log(value);
+    get_content_descriptor(){
+        const content_descriptor = [];
+        this.state.data.map((e) => (
+            e.children.forEach((c) =>{
+                if(c.attributes.nibble1 !== undefined && c.attributes.nibble2 !== undefined){
+                    content_descriptor.push({
+                        nibble1: c.attributes.nibble1,
+                        nibble2: c.attributes.nibble2
+                    })
+                }
+            })
+        ));
+        return content_descriptor;
+    }
+
+    get_parental_rating_descriptor(){
+        const parental_rating_descriptor = [];
+        this.state.data.map((e) => (
+            e.children.forEach((c) =>{
+                if(c.attributes.country_code !== undefined){
+                    parental_rating_descriptor.push({
+                        country_code: c.attributes.country_code,
+                        value: c.value
+                    })
+                }
+            })
+        ));
+        return parental_rating_descriptor;
+    }
+
+    onClickedHandle = (e) =>{
+        console.log("clicked!", e);
+        axios.get(imdbApiBaseUrl + e)
+        .then(res => {
+            id[e] = res.data.results[0]['id'];
+            img[e] = res.data.results[0].image;
+            console.log("image onClick: ", img);
+            this.setState({id: id});
+            this.setState({image: img});
+            console.log("state image: ", this.state.image);
+            console.log("Id: ", this.state.id);
+         });
+    }
+
+    collectEpg(){
+        const evn = this.getEvents();
+        const short_event_descriptor = this.get_short_event_descriptor();
+        const extended_event_descriptor = this.get_extended_event_descriptor();
+        const content_descriptor = this.get_content_descriptor();
+        const parental = this.get_parental_rating_descriptor();
+        epg = [];
+        content_descriptor.map((cd, i) =>{
+            return (
+            epg.push({
+                evn:{
+                    id: evn[i].id,
+                    start_time: evn[i].start_time,
+                    duration: evn[i].duration
+                },
+                short_event_descriptor:[
+                    {
+                        lang: short_event_descriptor[i+i].lang,
+                        name: short_event_descriptor[i+i].name
+                    },
+                    {
+                        lang: short_event_descriptor[i+i+1].lang,
+                        name: short_event_descriptor[i+i+1].name
+                    }
+                ],
+                extended_event_descriptor:[
+                    {
+                        lang: extended_event_descriptor[i+i].lang,
+                        text: extended_event_descriptor[i+i].text
+                    },
+                    {
+                        lang: extended_event_descriptor[i+i+1].lang,
+                        text: extended_event_descriptor[i+i+1].text
+                    }
+                ],
+                content_descriptor: {
+                    nibble1: cd.nibble1, 
+                    nibble2: cd.nibble2
+                },
+                parental_rating_descriptor:{
+                    country_code: parental[i].country_code,
+                    value: parental[i].value
+                }
+            }));
+        });
     }
 
     render() {
-        console.log(this.state.data);
-        const { currentPage, viewPerPage, pageSize } = this.state;
-        const data = this.state.data;
-
-        const indexOfLastData = currentPage * viewPerPage;
-        const indexOfFirstData = indexOfLastData - viewPerPage;
-        const currentData = data ? data.slice(indexOfFirstData, indexOfLastData) : [];
-
-        let sortedItems = [];
-        var operators = {
-            '>': function(a, b) { return a > b },
-            '<': function(a, b) { return a < b },
-        };
-        sortedItems = currentData.sort((a, b) => (operators[this.state.op](a[this.state.sortKey], b[this.state.sortKey]) ? 1 : -1));
-
-        const pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(data.length / viewPerPage); i++) {
-            pageNumbers.push(i);
-        }
-        const renderPageNumbers = pageNumbers.map(number => {
-            return (
-                <li className="page-item"
-                    key={number}
-                    id={number}
-                >
-                    <a href="/#"
-                        key={number}
-                        id={number}
-                        onClick={this.handleClick}
-                        className="page-link">{number}
-                    </a>
-                </li>
-            );
-        });
+        this.collectEpg();
+        
         return (
-            <div className='container'>
+            <div className='container-fluid'>
                 <table className="table table-bordered table-striped table-dark">
                     <thead>
                         <tr>
-                            {this.props.smartListHeaders && Array.isArray(this.props.smartListHeaders) && this.props.smartListHeaders.map(slh => (
+                            {slShort_event_descriptor && Array.isArray(slShort_event_descriptor) && slShort_event_descriptor.map(slh => (
                                 <th className="th-sm" key={slh.key}>
-                                    <div onClick={(e) => this.onSortedItems(slh.key)} style={{cursor: "pointer"}}><i className="bi bi-chevron-compact-down"></i>
+                                    <div><i className="bi bi-chevron-compact-down"></i>
                                         {slh.label}
                                     </div>
                                 </th>
@@ -113,37 +191,34 @@ class SmartList extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedItems && Array.isArray(sortedItems) && sortedItems.map((slc, index) =>
+                        {epg && Array.isArray(epg) && epg.map((slc, index) =>
                             <tr key={index}>
                                 {Object.keys(slc.short_event_descriptor[1]).map((key, i) => (
-                                    this.props.smartListHeaders.some(header => header.key === key) ? 
+                                    slShort_event_descriptor.some(header => header.key === key) ? 
                                     <td key={i}>
-                                        <div className="container">
+                                        <div className="container-fluid">
                                             <div className="row">
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Id'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.evn.id}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Start Time'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.evn.start_time}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Duration'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.evn.duration}
                                                     />
                                                 </div>
@@ -152,36 +227,32 @@ class SmartList extends Component {
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Nibble one'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.content_descriptor.nibble1}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Nibble two'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.content_descriptor.nibble2}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Country code'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.parental_rating_descriptor.country_code}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Parental'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.parental_rating_descriptor.value}
                                                     />
                                                 </div>
@@ -190,36 +261,34 @@ class SmartList extends Component {
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Alb'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.short_event_descriptor[0].lang}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Short'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.short_event_descriptor[0][key]}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Eng'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.short_event_descriptor[1].lang}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Short'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        id={this.state.short+index} name={this.state.short+index}
+                                                        changed={(e,i) => this.onChangeHandle(e, index)}
+                                                        
                                                         value={slc.short_event_descriptor[1][key]}
                                                     />
                                                 </div>
@@ -228,18 +297,16 @@ class SmartList extends Component {
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Alb'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.extended_event_descriptor[0].lang}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Extended'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.extended_event_descriptor[0].text}
                                                     />
                                                 </div>
@@ -248,23 +315,22 @@ class SmartList extends Component {
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textlabel'}
-                                                        className={'btn btn-success'}
                                                         labeled={'Eng'}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                         value={slc.extended_event_descriptor[1].lang}
                                                     />
                                                 </div>
                                                 <div className="col-sm">
                                                     <Input
                                                         elementType={'textbutton'}
-                                                        className={'btn btn-success'}
+                                                        className={'btn btn-outline-info'}
                                                         labeled={'Extended'}
                                                         type="button"
                                                         id={'extened' + index}
                                                         name={'extened' + index}
-                                                        clicked={(e, d) => this.props.clicked(slc.short_event_descriptor[1][this.props.where])}
-                                                        value={slc.extended_event_descriptor[1].text || this.props.content[index]}
-                                                        changed={(e) => this.props.changed(e.target.value)}
+                                                        clicked={(e) => this.onClickedHandle(slc.short_event_descriptor[1][this.props.where])}
+                                                        value={slc.extended_event_descriptor[1].text || this.state.image[slc.short_event_descriptor[1][this.props.where]]}
+                                                        changed={(e) => this.onChangeHandle(e)}
                                                     />
                                                 </div>
                                             </div>
@@ -275,24 +341,13 @@ class SmartList extends Component {
                                     {this.props.action === 'navlink'? 
                                     <NavLink className="btn btn-outline-info" to={this.props.view + '/' + slc.short_event_descriptor[1][this.props.where]}>{this.props.actionLabel}</NavLink>
                                     : this.props.action === 'button' ? 
-                                    <button className="btn btn-outline-danger" onClick={(e) => this.props.clicked(slc[this.props.where])}>{this.props.actionLabel}</button>
+                                    <button className="btn btn-outline-danger" onClick={(e) => this.onClickedHandle(slc[this.props.where])}>{this.props.actionLabel}</button>
                                     : null}
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
-                <nav aria-label="Page navigation example">
-                    {pageNumbers.length > viewPerPage ? 
-                        <ul className="pagination">
-                            <li className="page-item" onClick={this.onBegin}><a className="page-link" href="/#">{"|<"}</a></li>
-                            <li className="page-item" onClick={this.onPrevious}><a className="page-link" href="/#">Previous</a></li>
-                                {renderPageNumbers.slice((currentPage - 1), (currentPage + pageSize))}
-                            <li className="page-item" onClick={this.onNext}><a className="page-link" href="/#">Next</a></li>
-                            <li className="page-item" onClick={this.onEnd}><a className="page-link" href="/#">{">|"}</a></li>
-                        </ul>: null
-                    }   
-                </nav>
             </div>
         );
     }

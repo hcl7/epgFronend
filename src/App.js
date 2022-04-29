@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Head from './Components/Head.jsx';
 import './App.css';
 import { connect } from 'react-redux';
-import * as actions from './store/actions';
+//import * as actions from './store/actions';
 import Home from './Components/Home';
 import EventDetails from './Components/EventDetails';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
@@ -10,8 +10,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 class App extends Component {
   render(){
     return (
+      <React.StrictMode>
       <Router>
-        <div className='countainer'>
+        <div className='countainer-fluid'>
           <Head />
         </div>
           <Switch>
@@ -19,6 +20,7 @@ class App extends Component {
             <Route path='/details/:name' component={EventDetails} />
           </Switch>
       </Router>
+      </React.StrictMode>
     );
   } 
 }

@@ -22,7 +22,7 @@ class EventDetails extends React.Component{
     }
     render(){
         return(
-            <div className="container">
+            <div className="container-fluid">
                 <input type="image" alt={'image from imdb'} src={this.state.image} />
             </div>
         );

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Config} from '../Config/Config';
 import { NavLink } from 'react-router-dom';
-import * as actions from '../store/actions';
+//import * as actions from '../store/actions';
 import { connect } from 'react-redux';
 
 class Head extends React.Component{
@@ -12,8 +12,8 @@ class Head extends React.Component{
     render(){
         //console.log('isAuthenticated: ', this.props.isAuthenticated);
         return(
-            <nav className="navbar container navbar-expand-lg py-3" style={Config.container.style}>
-                <div className="container">
+            <nav className="navbar container-fluid navbar-expand-lg py-3" style={Config.container.style}>
+                <div className="container-fluid">
                     <NavLink to={'/'}><img src={Config.logo.img} style={Config.logo.style} alt={Config.logo.alt} className='navbar-brand d-inline-block align-middle mr-2' /></NavLink>
                     <span className="text-white"></span>
                     <div id="navbarSupportedContent" className="collapse navbar-collapse">

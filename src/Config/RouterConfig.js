@@ -39,6 +39,17 @@ export const currentDate = () => {
       );
 }
 
+String.prototype.format = function() {
+  var s = this, i = arguments.length;
+  while (i--) {
+      s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+  }
+  return s;
+};
+
+const testString = "Hello {0} {1}";
+export const testFromat = testString.format('elvin', 'mucaj');
+
 export const renameKey = (object, key, newKey) => {
     const clonedObj = Object.assign({}, object);
     const targetKey = clonedObj[key];
