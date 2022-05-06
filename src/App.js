@@ -12,13 +12,11 @@ class App extends Component {
     return (
       <React.StrictMode>
       <Router>
-        <div className='countainer-fluid'>
-          <Head />
-        </div>
-          <Switch>
-            <Route path='/' exact component={Home} />
-            <Route path='/details/:name' component={EventDetails} />
-          </Switch>
+        <Head />
+        <Switch>
+          <Route path='/' exact component={Home} />
+          <Route path='/details/:name' component={EventDetails} />
+        </Switch>
       </Router>
       </React.StrictMode>
     );

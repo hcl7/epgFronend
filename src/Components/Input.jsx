@@ -9,6 +9,7 @@ const textInput = (props) => {
             inputElement = <input
                 className="form-control form-control-sm"
                 placeholder={props.placeholder}
+                name={props.name}
                 type={props.type}
                 value={props.value}
                 readOnly={props.isReadOnly}
@@ -20,6 +21,7 @@ const textInput = (props) => {
             inputElement = <textarea
                 className="form-control form-control-sm"
                 type={props.type}
+                name={props.name}
                 value={props.value}
                 onChange={props.changed}
             />;
@@ -42,7 +44,12 @@ const textInput = (props) => {
         break;
         case ('button'):
             inputElement = (
-                <button className={props.class} type={props.type} disabled={props.disabled} onClick={props.clicked}>
+                <button 
+                    className={props.class} 
+                    type={props.type} 
+                    disabled={props.disabled}
+                    id={props.id}
+                    onClick={props.clicked}>
                     {props.icon === 'upload' ?
                         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" className="bi bi-upload" viewBox="0 0 16 16">
                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
@@ -96,11 +103,18 @@ const textInput = (props) => {
                         <button 
                             onClick={props.clicked} 
                             className="btn btn-outline-secondary" 
-                            type={props.type} id={props.id} name={props.name}
+                            id={props.id}
+                            type={props.type}
                             >{props.labeled}
                         </button>
                     </div>
-                    <input type="text" className="form-control" onChange={props.changed} defaultValue={props.value} />
+                    <input 
+                        type="text" 
+                        name={props.name} 
+                        className="form-control" 
+                        onChange={props.changed} 
+                        defaultValue={props.value} 
+                    />
                 </div>
             );
         break;
@@ -110,7 +124,13 @@ const textInput = (props) => {
                     <div className="input-group-prepend">
                         <span className="input-group-text">{props.labeled}</span>
                     </div>
-                    <input type="text" className="form-control" onChange={props.changed} defaultValue={props.value} />
+                    <input 
+                        type="text" 
+                        name={props.name} 
+                        className="form-control" 
+                        onChange={props.changed} 
+                        defaultValue={props.value} 
+                    />
                 </div>
             );
         break;
@@ -118,6 +138,7 @@ const textInput = (props) => {
             inputElement = <input
                 className="form-control form-control-sm"
                 value={props.value}
+                name={props.name}
                 onChange={props.changed}
             />;
     }
