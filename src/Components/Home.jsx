@@ -1,13 +1,16 @@
 import React from 'react';
-import {slShort_event_descriptor} from '../Config/RouterConfig';
+import {slShort_event_descriptor,sleep} from '../Config/RouterConfig';
 import SmartList from '../Components/SmartList';
 import XMLParser from 'react-xml-parser';
 import axios from '../Config/axios-baseUrl';
-//import {imdbApiBaseUrl} from '../Config/RouterConfig';
 import Input from '../Components/Input';
 
 
-let epg = [];
+let epgs = [];
+let channels = [
+    {id: 1, title: 'HITS'},
+    {id: 2, title: 'ACTION'}
+];
 
 class Home extends React.Component{
 
@@ -15,19 +18,18 @@ class Home extends React.Component{
         id: {},
         image: {},
         data: [],
-        epg: []
+        epg: [],
+        fileContent: ''
     }
 
     componentDidMount() {
-        console.log('componentDidMount!');
-        axios.get('/Hits.xml', {
-           "Content-Type": "application/xml; charset=utf-8"
-        }).then(res => {
-            const jsonXml = new XMLParser().parseFromString(res.data);
+        axios.get('/tvaepg/view', {
+            "Content-Type": "application/xml; charset=utf-8"
+         }).then(res => {
             this.setState({ 
-                data: jsonXml.getElementsByTagName('Event'), 
+                epg: res.data
             });
-        });
+         });
     }
 
     getEvents(){
@@ -104,20 +106,16 @@ class Home extends React.Component{
         return parental_rating_descriptor;
     }
 
-    onClickedHandle = (e) =>{
-        
-    }
-
     collectEpg(){
         const evn = this.getEvents();
         const short_event_descriptor = this.get_short_event_descriptor();
         const extended_event_descriptor = this.get_extended_event_descriptor();
         const content_descriptor = this.get_content_descriptor();
         const parental = this.get_parental_rating_descriptor();
-        epg = [];
+        epgs = [];
         content_descriptor.map((cd, i) =>{
             return (
-            epg.push({
+            epgs.push({
                 evn:{
                     id: evn[i].id,
                     start_time: evn[i].start_time,
@@ -153,52 +151,111 @@ class Home extends React.Component{
                 }
             }));
         });
-    }
+    }   
 
     insertHandler = () =>{
-        let fdata = new FormData();
-        epg && Array.isArray(epg) && epg.forEach((e, i) =>{
-            fdata.append('eid', e.evn.id);
-            fdata.append('start_time', e.evn.start_time);
-            fdata.append('duration', e.evn.duration);
-            fdata.append('cd_nibble1', e.content_descriptor.nibble1);
-            fdata.append('cd_nibble2', e.content_descriptor.nibble2);
-            fdata.append('prd_country_code', e.parental_rating_descriptor.country_code);
-            fdata.append('prd_value', e.parental_rating_descriptor.value);
-            fdata.append('sed_name_alb', e.short_event_descriptor[0]['name']);
-            fdata.append('sed_lang_alb', 'Alb');
-            fdata.append('sed_name_eng', e.short_event_descriptor[1]['name']);
-            fdata.append('sed_lang_eng', 'Eng');
-            fdata.append('eed_text_alb', e.extended_event_descriptor[0].text);
-            fdata.append('eed_lang_alb', 'Alb');
-            fdata.append('eed_text_eng', e.extended_event_descriptor[1].text);
-            fdata.append('eed_lang_eng', 'Eng');
+        console.log('insertHandler!');
+
+        const jsonXml = new XMLParser().parseFromString(this.state.fileContent);
+        this.setState({ 
+            data: jsonXml.getElementsByTagName('Event'), 
         });
-        console.log("all: ", fdata.getAll('sed_name_alb'));
+        
+        this.collectEpg();
+        console.log('epgs: ', epgs);
+
+        let headers = {'Content-Type': 'multipart/form-data' };
+        epgs && Array.isArray(epgs) && epgs.forEach((e) =>{
+            const fdata = new FormData();
+            fdata.append('eid', e.evn.id);
+            fdata.append('starttime', e.evn.start_time);
+            fdata.append('duration', e.evn.duration);
+            fdata.append('CdNibble1', e.content_descriptor.nibble1);
+            fdata.append('CdNibble2', e.content_descriptor.nibble2);
+            fdata.append('PrdCountryCode', e.parental_rating_descriptor.country_code);
+            fdata.append('PrdValue', e.parental_rating_descriptor.value);
+            fdata.append('SedNameAlb', e.short_event_descriptor[0]['name']);
+            fdata.append('SedLangAlb', 'Alb');
+            fdata.append('SedNameEng', e.short_event_descriptor[1]['name']);
+            fdata.append('SedLangEng', 'Eng');
+            fdata.append('EedTextAlb', e.extended_event_descriptor[0].text);
+            fdata.append('EedLangAlb', 'Alb');
+            fdata.append('EedTextEng', e.extended_event_descriptor[1].text);
+            fdata.append('EedLangEng', 'Eng');
+            fdata.append('Channel', this.state.channel);
+            fdata.append('Status', 1);
+            axios.post('/tvaepg/insert/', fdata, headers)
+                .then(function (response){
+                    console.log(response);
+                })
+                .catch(function (error){
+                    console.log(error);
+                }
+            );
+            sleep(500);
+        });
+    }
+
+    onFileChange = (event) => {
+        event.preventDefault();
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const text = event.target.result;
+            this.setState({fileContent: text});
+        };
+        reader.readAsText(event.target.files[0], 'ISO-8859-1');
+    }
+
+    onChangedSelectedChannel = (e) =>{
+        let options = e.target.options;
+        let value = [];
+        for (let i = 0, l = options.length; i < l; i++) {
+            if (options[i].selected) {
+                value.push(channels[i]);
+            }
+        }
+        console.log("Channel Selected: ", value[0].title);
+        this.setState({ channel: value[0].title });
     }
 
     render(){
-        this.collectEpg();
-        console.log(epg);
+        
+        //console.log(this.state.epg);
         return(
             <div className="container">
                 <React.StrictMode>
                     <div className="container">
-                        <Input
-                            elementType={'button'}
-                            class='btn btn-outline-info'
-                            id={'cd'}
-                            value={'Insert'}
-                            clicked={this.insertHandler}
-                        />
+                        <div className="row">
+                            <div className="col-sm">
+                                <input className="file-upload" type="file" name="file"  data-icon="false" onChange={this.onFileChange} />
+                            </div>
+                            <div className="col-sm">
+                                <Input
+                                    elementType={'button'}
+                                    class='btn btn-outline-info'
+                                    id={'cd'}
+                                    value={'Insert'}
+                                    clicked={this.insertHandler.bind(this)}
+                                />
+                            </div>
+                            <div className="col">
+                                <Input
+                                    elementType={'select'}
+                                    id={'channel'}
+                                    optitle={'title'}
+                                    options={channels}
+                                    changed={this.onChangedSelectedChannel}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <SmartList 
                         smartListHeaders={slShort_event_descriptor}
-                        smartListContents={epg}
+                        smartListContents={this.state.epg}
                         actionLabel={'Details'}
                         action={'navlink'}
                         view={'/details'}
-                        where="name"
+                        where="id"
                     />
                 </React.StrictMode>
             </div>

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const slShort_event_descriptor = [
     // { label: 'Lang', key: 'lang' },
-    { label: 'Title', key: 'name' },
+    { label: 'Title', key: 'sedNameEng' },
     // { label: 'Shortevent', key: 'short' },
     // { label: 'content', key: 'content'},
     // { label: 'parental', key: 'parental'},
@@ -10,6 +10,9 @@ export const slShort_event_descriptor = [
 ];
 
 export const imdbApiBaseUrl = 'https://imdb-api.com/en/API/SearchMovie/k_z9yeskhc/';
+export const imdbApiPostUrl = 'https://imdb-api.com/en/API/Posters/k_z9yeskhc/';
+export const imdbApiWikipedia = (id)=> { return 'https://imdb-api.com/en/API/Title/k_z9yeskhc/'+ id +'/Wikipedia'; }
+export const imdbApiTrailer = 'https://imdb-api.com/en/API/Trailer/k_z9yeskhc/';
 
 export function apiGet(payload){
   axios.get(imdbApiBaseUrl + payload)
@@ -127,3 +130,7 @@ export const TVAXMLBody = '<ProgramInformationTable>' +
     '<Name>AT5NL_11</Name>' +
   '</ServiceInformation>' +
 '</ServiceInformationTable>';
+
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

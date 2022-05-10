@@ -34,20 +34,20 @@ class SmartList extends Component {
                     <tbody>
                         {epg && Array.isArray(epg) && epg.map((slc, index) =>
                             <tr key={index}>
-                                {Object.keys(slc.short_event_descriptor[1]).map((key, i) => (
+                                {Object.keys(slc).map((key, i) => (
                                     this.props.smartListHeaders.some(header => header.key === key) ? 
                                     <td key={i}>
                                         <Input 
                                             isReadOnly={true}
                                             elementType="input"
                                             type="label" id="title" name="title"
-                                            value={slc.short_event_descriptor[1][key]}
+                                            value={slc.sedNameEng}
                                         />
                                     </td> : null
                                 ))}
                                 <td>
                                     {this.props.action === 'navlink'? 
-                                    <NavLink className="btn btn-outline-info" to={this.props.view + '/' + slc.short_event_descriptor[1][this.props.where]}>{this.props.actionLabel}</NavLink>
+                                    <NavLink className="btn btn-outline-info" to={this.props.view + '/' + slc[this.props.where]}>{this.props.actionLabel}</NavLink>
                                     : this.props.action === 'button' ? 
                                     <button className="btn btn-outline-danger" onClick={(e) => this.props.clicked(slc[this.props.where])}>{this.props.actionLabel}</button>
                                     : null}
