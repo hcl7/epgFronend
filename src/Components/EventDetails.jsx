@@ -39,6 +39,8 @@ class EventDetails extends React.Component {
                 shortEng: res.data[0].sedNameEng,
                 extendedAlb: res.data[0].eedTextAlb,
                 extenedEng: res.data[0].eedTextEng,
+                poster: res.data[0].poster,
+                trailer: res.data[0].trailer
             });
         })
         .catch(function (){
@@ -110,6 +112,8 @@ class EventDetails extends React.Component {
         data.append('EedLangAlb', 'Alb');
         data.append('EedTextEng', this.state.extenedEng);
         data.append('EedLangEng', 'Eng');
+        data.append('Poster', this.state.poster);
+        data.append('Trailer', this.state.trailer);
 
         axios.post('/tvaepg/update/' + id, data)
         .then(res =>{
