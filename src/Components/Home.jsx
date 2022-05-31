@@ -219,8 +219,6 @@ class Home extends React.Component{
     }
 
     render(){
-        
-        //console.log(this.state.epg);
         return(
             <div className="container">
                 <React.StrictMode>
