@@ -4,7 +4,7 @@ import SmartList from '../Components/SmartList';
 import XMLParser from 'react-xml-parser';
 import axios from '../Config/axios-baseUrl';
 import Input from '../Components/Input';
-
+import Spinner from '../Helper/Spinner';
 
 let epgs = [];
 let channels = [
@@ -19,7 +19,8 @@ class Home extends React.Component{
         image: {},
         data: [],
         epg: [],
-        fileContent: ''
+        fileContent: '',
+        loading: true
     }
 
     componentDidMount() {
@@ -27,7 +28,8 @@ class Home extends React.Component{
             "Content-Type": "application/xml; charset=utf-8"
          }).then(res => {
             this.setState({ 
-                epg: res.data
+                epg: res.data,
+                loading: false
             });
          });
     }
@@ -219,6 +221,21 @@ class Home extends React.Component{
     }
 
     render(){
+        let smartlist = null;
+        if(this.state.loading){
+            smartlist = (
+                <Spinner />
+            );
+        } else {
+            smartlist = <SmartList 
+                smartListHeaders={slShort_event_descriptor}
+                smartListContents={this.state.epg}
+                actionLabel={'Details'}
+                action={'navlink'}
+                view={'/details'}
+                where="id"
+            />
+        }
         return(
             <div className="container">
                 <React.StrictMode>
@@ -247,14 +264,7 @@ class Home extends React.Component{
                             </div>
                         </div>
                     </div>
-                    <SmartList 
-                        smartListHeaders={slShort_event_descriptor}
-                        smartListContents={this.state.epg}
-                        actionLabel={'Details'}
-                        action={'navlink'}
-                        view={'/details'}
-                        where="id"
-                    />
+                    {smartlist}
                 </React.StrictMode>
             </div>
         );
