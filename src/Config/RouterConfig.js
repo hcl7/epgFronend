@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const slShort_event_descriptor = [
     // { label: 'Lang', key: 'lang' },
-    { label: 'Title', key: 'sedNameEng' },
+    { label: 'Title', key: 'shortEng' },
     // { label: 'Shortevent', key: 'short' },
     // { label: 'content', key: 'content'},
     // { label: 'parental', key: 'parental'},

@@ -7,31 +7,66 @@ import Input from '../Components/Input';
 import Spinner from '../Helper/Spinner';
 
 let epgs = [];
-let channels = [
-    {id: 1, title: 'HITS'},
-    {id: 2, title: 'ACTION'}
-];
 
-class Home extends React.Component{
+class Home extends React.Component {
 
     state = {
         id: {},
         image: {},
         data: [],
         epg: [],
+        channels: [],
         fileContent: '',
         loading: true
     }
 
     componentDidMount() {
-        axios.get('/tvaepg/view', {
+        this.getEpgs();
+        this.getChannels();
+    }
+
+    getEpgs = () =>{
+        var config = {
+            method: 'get',
+            url: '/tvaepg/view',
+            headers: { 
+                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+            },
             "Content-Type": "application/xml; charset=utf-8"
-         }).then(res => {
-            this.setState({ 
+        };
+        axios(config).then(res => {
+            this.setState({
                 epg: res.data,
                 loading: false
             });
-         });
+        });
+        console.log('getEpgs: ', this.state.epg);
+    }
+
+    getChannels = () =>{
+        var config = {
+            method: 'get',
+            url: '/channels/view',
+            headers: { 
+                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+            },
+            "Content-Type": "application/xml; charset=utf-8"
+        };
+        
+        axios(config).then(res => {
+            let channels = [];
+            res.data.map((channel, i) => {
+                channels.push({
+                    id: i, 
+                    title: channel,
+                });
+            });
+            this.setState({
+                channels: channels,
+                loading: false
+            });
+            console.log('channels: ',this.state.channels);
+        });
     }
 
     getEvents(){
@@ -175,15 +210,11 @@ class Home extends React.Component{
             fdata.append('CdNibble1', e.content_descriptor.nibble1);
             fdata.append('CdNibble2', e.content_descriptor.nibble2);
             fdata.append('PrdCountryCode', e.parental_rating_descriptor.country_code);
-            fdata.append('PrdValue', e.parental_rating_descriptor.value);
-            fdata.append('SedNameAlb', e.short_event_descriptor[0]['name']);
-            fdata.append('SedLangAlb', 'Alb');
-            fdata.append('SedNameEng', e.short_event_descriptor[1]['name']);
-            fdata.append('SedLangEng', 'Eng');
-            fdata.append('EedTextAlb', e.extended_event_descriptor[0].text);
-            fdata.append('EedLangAlb', 'Alb');
-            fdata.append('EedTextEng', e.extended_event_descriptor[1].text);
-            fdata.append('EedLangEng', 'Eng');
+            fdata.append('Prd', e.parental_rating_descriptor.value);
+            fdata.append('ShortAlb', e.short_event_descriptor[0]['name']);
+            fdata.append('ShortEng', e.short_event_descriptor[1]['name']);
+            fdata.append('ExtendedAlb', e.extended_event_descriptor[0].text);
+            fdata.append('ExtendedEng', e.extended_event_descriptor[1].text);
             fdata.append('Channel', this.state.channel);
             fdata.append('Status', 1);
             axios.post('/tvaepg/insert/', fdata, headers)
@@ -213,7 +244,7 @@ class Home extends React.Component{
         let value = [];
         for (let i = 0, l = options.length; i < l; i++) {
             if (options[i].selected) {
-                value.push(channels[i]);
+                value.push(this.state.channels[i]);
             }
         }
         console.log("Channel Selected: ", value[0].title);
@@ -253,12 +284,12 @@ class Home extends React.Component{
                                     clicked={this.insertHandler.bind(this)}
                                 />
                             </div>
-                            <div className="col">
+                            <div className="col-sm">
                                 <Input
                                     elementType={'select'}
                                     id={'channel'}
                                     optitle={'title'}
-                                    options={channels}
+                                    options={this.state.channels}
                                     changed={this.onChangedSelectedChannel}
                                 />
                             </div>

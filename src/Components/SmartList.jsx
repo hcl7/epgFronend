@@ -41,7 +41,7 @@ class SmartList extends Component {
                                             isReadOnly={true}
                                             elementType="input"
                                             type="label" id="title" name="title"
-                                            value={slc.sedNameEng}
+                                            value={slc.shortEng}
                                         />
                                     </td> : null
                                 ))}

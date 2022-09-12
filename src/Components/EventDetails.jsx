@@ -24,7 +24,16 @@ class EventDetails extends React.Component {
 
     componentDidMount(){
         const id = this.props.match.params.name
-        axios.get('/tvaepg/detail/' + id)
+        var config = {
+            method: 'get',
+            url: '/tvaepg/detail/' + id,
+            headers: { 
+                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+            },
+            "Content-Type": "application/xml; charset=utf-8"
+        };
+        
+        axios(config)
         .then(res => {
             console.log(res.data);
             this.setState({
@@ -34,11 +43,11 @@ class EventDetails extends React.Component {
                 nibble2: res.data[0].cdNibble2,
                 duration: res.data[0].duration,
                 country_code: res.data[0].prdCountryCode,
-                parental: res.data[0].prdValue,
-                shortAlb: res.data[0].sedNameAlb,
-                shortEng: res.data[0].sedNameEng,
-                extendedAlb: res.data[0].eedTextAlb,
-                extenedEng: res.data[0].eedTextEng,
+                parental: res.data[0].prd,
+                shortAlb: res.data[0].shortAlb,
+                shortEng: res.data[0].shortEng,
+                extendedAlb: res.data[0].extendedAlb,
+                extenedEng: res.data[0].extendedEng,
                 poster: res.data[0].poster,
                 trailer: res.data[0].trailer
             });
@@ -103,19 +112,24 @@ class EventDetails extends React.Component {
         data.append('CdNibble1', this.state.nibble1);
         data.append('CdNibble2', this.state.nibble2);
         data.append('PrdCountryCode', this.state.country_code);
-        data.append('PrdValue', this.state.parental);
-        data.append('SedNameAlb', this.state.shortAlb);
-        data.append('SedLangAlb', 'Alb');
-        data.append('SedNameEng', this.state.shortEng);
-        data.append('SedLangEng', 'Eng');
-        data.append('EedTextAlb', this.state.extendedAlb);
-        data.append('EedLangAlb', 'Alb');
-        data.append('EedTextEng', this.state.extenedEng);
-        data.append('EedLangEng', 'Eng');
+        data.append('Prd', this.state.parental);
+        data.append('ShortAlb', this.state.shortAlb);
+        data.append('ShortEng', this.state.shortEng);
+        data.append('ExtendedAlb', this.state.extendedAlb);
+        data.append('ExtendedEng', this.state.extenedEng);
         data.append('Poster', this.state.poster);
         data.append('Trailer', this.state.trailer);
 
-        axios.post('/tvaepg/update/' + id, data)
+        var config = {
+            method: 'post',
+            url: '/tvaepg/update/' + id,
+            headers: { 
+                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+            },
+            "Content-Type": "application/xml; charset=utf-8",
+            data: data
+        };
+        axios(config)
         .then(res =>{
             console.log(res.data);
         })
