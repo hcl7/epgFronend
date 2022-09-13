@@ -46,10 +46,10 @@ class SmartList extends Component {
                                     </td> : null
                                 ))}
                                 <td>
-                                    {this.props.action === 'navlink'? 
-                                    <NavLink className="btn btn-outline-info" to={this.props.view + '/' + slc[this.props.where]}>{this.props.actionLabel}</NavLink>
+                                    {this.props.action === 'navlink' ? 
+                                    <NavLink className="btn btn-outline-info" style={{verticalAlign: "middle"}} to={this.props.view + '/' + slc[this.props.where]}>{this.props.actionLabel}</NavLink>
                                     : this.props.action === 'button' ? 
-                                    <button className="btn btn-outline-danger" onClick={(e) => this.props.clicked(slc[this.props.where])}>{this.props.actionLabel}</button>
+                                    <button className="btn btn-outline-danger" style={{verticalAlign: "middle"}} onClick={(e) => this.props.clicked(slc[this.props.where])}>{this.props.actionLabel}</button>
                                     : null}
                                 </td>
                             </tr>

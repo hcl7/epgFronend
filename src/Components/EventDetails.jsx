@@ -23,6 +23,10 @@ class EventDetails extends React.Component {
     }
 
     componentDidMount(){
+        this.getDetailsById();
+    }
+
+    getDetailsById = () =>{
         const id = this.props.match.params.name
         var config = {
             method: 'get',
@@ -56,7 +60,7 @@ class EventDetails extends React.Component {
             console.log("Check short Eng field!");
         });
     }
-
+    
     onChangeHandle = (evt) =>{
         this.setState({[evt.target.name]: evt.target.value});
         console.log("evt: ", this.state);

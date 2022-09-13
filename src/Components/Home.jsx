@@ -55,7 +55,7 @@ class Home extends React.Component {
         
         axios(config).then(res => {
             let channels = [];
-            res.data.map((channel, i) => {
+            res.data.forEach((channel, i) => {
                 channels.push({
                     id: i, 
                     title: channel,
@@ -201,7 +201,6 @@ class Home extends React.Component {
         this.collectEpg();
         console.log('epgs: ', epgs);
 
-        let headers = {'Content-Type': 'multipart/form-data' };
         epgs && Array.isArray(epgs) && epgs.forEach((e) =>{
             const fdata = new FormData();
             fdata.append('eid', e.evn.id);
@@ -217,7 +216,17 @@ class Home extends React.Component {
             fdata.append('ExtendedEng', e.extended_event_descriptor[1].text);
             fdata.append('Channel', this.state.channel);
             fdata.append('Status', 1);
-            axios.post('/tvaepg/insert/', fdata, headers)
+
+            var config = {
+                method: 'post',
+                url: '/tvaepg/insert',
+                data: fdata,
+                headers: { 
+                    'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                },
+                "Content-Type": "application/xml; charset=utf-8"
+            };
+            axios(config)
                 .then(function (response){
                     console.log(response);
                 })
@@ -268,36 +277,39 @@ class Home extends React.Component {
             />
         }
         return(
-            <div className="container">
-                <React.StrictMode>
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-sm">
-                                <input className="file-upload" type="file" name="file"  data-icon="false" onChange={this.onFileChange} />
-                            </div>
-                            <div className="col-sm">
-                                <Input
-                                    elementType={'button'}
-                                    class='btn btn-outline-info'
-                                    id={'cd'}
-                                    value={'Insert'}
-                                    clicked={this.insertHandler.bind(this)}
-                                />
-                            </div>
-                            <div className="col-sm">
-                                <Input
-                                    elementType={'select'}
-                                    id={'channel'}
-                                    optitle={'title'}
-                                    options={this.state.channels}
-                                    changed={this.onChangedSelectedChannel}
-                                />
-                            </div>
+            <React.StrictMode>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-sm-2">
+                            <Input elementType={'iLink'}
+                                icon={'add'}
+                                view={'add'}
+                                where={'event'}
+                            />
+                        </div>
+                        <div className="col-sm-8">
+                            <Input
+                                elementType={'textbutton'}
+                                className={'btn btn-outline-info'}
+                                labeled={'Search'}
+                                type="button"
+                                id={'searchEvent'}
+                                
+                            />
+                        </div>
+                        <div className="col-sm-2">
+                            <Input
+                                elementType={'select'}
+                                id={'channel'}
+                                optitle={'title'}
+                                options={this.state.channels}
+                                changed={this.onChangedSelectedChannel}
+                            />
                         </div>
                     </div>
-                    {smartlist}
-                </React.StrictMode>
-            </div>
+                </div>
+                {smartlist}
+            </React.StrictMode>
         );
     }
 }

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 //import * as actions from './store/actions';
 import Home from './Components/Home';
 import EventDetails from './Components/EventDetails';
+import AddEvent from './Components/AddEvent';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 class App extends Component {
@@ -15,7 +16,8 @@ class App extends Component {
         <Head />
         <Switch>
           <Route path='/' exact component={Home} />
-          <Route path='/details/:name' component={EventDetails} />
+          <Route path='/details/:id' component={EventDetails} />
+          <Route path='/add/event' component={AddEvent} />
         </Switch>
       </Router>
       </React.StrictMode>
