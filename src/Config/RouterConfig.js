@@ -42,6 +42,11 @@ export const currentDate = () => {
       );
 }
 
+export const onEventHandler = (evt) =>{
+  this.setState({[evt.target.name]: evt.target.value});
+  console.log("evt: ", this.state);
+}
+
 String.prototype.format = function() {
   var s = this, i = arguments.length;
   while (i--) {

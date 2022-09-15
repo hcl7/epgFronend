@@ -115,6 +115,7 @@ const textInput = (props) => {
                             className="btn btn-outline-secondary" 
                             id={props.id}
                             type={props.type}
+                            disabled={props.disabled}
                             >{props.labeled}
                         </button>
                     </div>

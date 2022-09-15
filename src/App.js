@@ -16,7 +16,7 @@ class App extends Component {
         <Head />
         <Switch>
           <Route path='/' exact component={Home} />
-          <Route path='/details/:id' component={EventDetails} />
+          <Route path='/details/:name' component={EventDetails} />
           <Route path='/add/event' component={AddEvent} />
         </Switch>
       </Router>

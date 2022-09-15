@@ -20,6 +20,7 @@ class EventDetails extends React.Component {
         extenedEng: '',
         poster: '',
         trailer: '',
+        pressed: true
     }
 
     componentDidMount(){
@@ -84,7 +85,8 @@ class EventDetails extends React.Component {
         .then(res => {
             this.setState({
                 poster: res.data.results[0].image,
-                id: res.data.results[0]['id']
+                id: res.data.results[0]['id'],
+                pressed: false
             });
         })
         .catch(function (){
@@ -149,7 +151,7 @@ class EventDetails extends React.Component {
                     <div className="col-sm">
                         <Input
                             elementType={'textlabel'}
-                            labeled={'Id'}
+                            labeled={'Event Id'}
                             name={'eid'}
                             changed={this.onChangeHandle}
                             value={this.state.eid}
@@ -252,6 +254,7 @@ class EventDetails extends React.Component {
                             clicked={this.onExtenedClicked}
                             value={this.state.extenedEng}
                             changed={this.onChangeHandle}
+                            disabled={this.state.pressed || this.state.pressed}
                         />
                     </div>
                 </div>
@@ -277,6 +280,7 @@ class EventDetails extends React.Component {
                             id={'trailer'}
                             changed={this.onChangeHandle}
                             value={this.state.trailer}
+                            disabled={this.state.pressed || this.state.pressed}
                             clicked={this.onTrailerClicked}
                         />
                     </div>
