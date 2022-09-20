@@ -13,18 +13,23 @@ class Home extends React.Component {
         data: [],
         epg: [],
         channels: [],
-        fileContent: '',
         loading: true,
-        selectedChannel: ''
+        selectedChannel: '',
+        squery: ''
     }
 
     componentDidMount() {
         this.getChannels();
     }
 
-    getEpgs = (channel) =>{
+    onChangeHandle = (evt) =>{
+        this.setState({[evt.target.name]: evt.target.value});
+    }
+
+    getEpgs = (channel, query) =>{
         var data = new FormData();
         data.append('channel', channel);
+        data.append('query', query);
         var config = {
             method: 'post',
             url: '/tvaepg/view',
@@ -64,7 +69,7 @@ class Home extends React.Component {
                 channels: channels,
                 selectedChannel: Object(channels[0]).title,
                 loading: false
-            }, function() {this.getEpgs(this.state.selectedChannel)}.bind(this));
+            });
             console.log('channels: ',this.state.channels);
         });
     }
@@ -79,7 +84,10 @@ class Home extends React.Component {
         }
         console.log("Channel Selected: ", value[0].title);
         this.setState({ selectedChannel: value[0].title });
-        this.getEpgs(value[0].title);
+    }
+
+    onSearch = () =>{
+        this.getEpgs(this.state.selectedChannel, this.state.squery);
     }
 
     render(){
@@ -108,16 +116,21 @@ class Home extends React.Component {
                                 icon={'add'}
                                 view={'add'}
                                 where={'event'}
+                                styled={{height:32}}
                             />
                         </div>
                         <div className="col-sm-8">
                             <Input
+                                styled={{height: 32}}
+                                bstyled={{height: 32}}
                                 elementType={'textbutton'}
                                 className={'btn btn-outline-info'}
                                 labeled={'Search'}
                                 type="button"
-                                id={'searchEvent'}
-                                
+                                name={'squery'}
+                                value={this.state.squery}
+                                changed={this.onChangeHandle}
+                                clicked={this.onSearch}
                             />
                         </div>
                         <div className="col-sm-2">

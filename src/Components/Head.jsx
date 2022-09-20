@@ -17,8 +17,9 @@ class Head extends React.Component{
                     <NavLink to={'/'}><img src={Config.logo.img} style={Config.logo.style} alt={Config.logo.alt} className='navbar-brand d-inline-block align-middle mr-2' /></NavLink>
                     <span className="text-white"></span>
                     <div id="navbarSupportedContent" className="collapse navbar-collapse">
-                        <ul className="navbar-nav ml-auto">
+                        <ul className="navbar-nav">
                             <li className="nav-item"><NavLink to={'/'} className='nav-link text-white'>{'Home'}</NavLink></li>
+                            <li className="nav-item"><NavLink to={'/export/'} className='nav-link text-white'>{'Export'}</NavLink></li>
                         </ul>
                     </div>
                 </div>

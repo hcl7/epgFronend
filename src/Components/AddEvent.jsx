@@ -18,7 +18,13 @@ class AddEvent extends React.Component{
         poster: '',
         trailer: '',
         pressed: true,
-        channels: []
+        channels: [],
+        loading: false,
+        selectedChannel: ''
+    }
+
+    componentDidMount(){
+        this.getChannels();
     }
 
     onChangeHandle = (evt) =>{
@@ -26,6 +32,43 @@ class AddEvent extends React.Component{
         console.log("evt: ", this.state);
     }
 
+    onChangedSelectedChannel = (e) =>{
+        let options = e.target.options;
+        let value = [];
+        for (let i = 0, l = options.length; i < l; i++) {
+            if (options[i].selected) {
+                value.push(this.state.channels[i]);
+            }
+        }
+        console.log("Channel Selected: ", value[0].title);
+        this.setState({ selectedChannel: value[0].title });
+    }
+
+    getChannels = () =>{
+        var config = {
+            method: 'post',
+            url: '/channels/all',
+            headers: { 
+                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+            },
+            "Content-Type": "application/xml; charset=utf-8"
+        };
+        
+        axios(config).then(res => {
+            let channels = [];
+            res.data.forEach((channel, i) => {
+                channels.push({
+                    id: i, 
+                    title: channel.channel,
+                });
+            });
+            this.setState({
+                channels: channels,
+                selectedChannel: Object(channels[0]).title,
+                loading: false
+            });
+        });
+    }
 
     addEventHandler = () =>{
         const fdata = new FormData();
@@ -211,6 +254,15 @@ class AddEvent extends React.Component{
                             value={'Save'}
                             id={'save'}
                             clicked={this.addEventHandler}
+                        />
+                    </div>
+                    <div className="col-sm">
+                        <Input
+                            elementType={'select'}
+                            id={'channel'}
+                            optitle={'title'}
+                            options={this.state.channels}
+                            changed={this.onChangedSelectedChannel}
                         />
                     </div>
                 </div>
