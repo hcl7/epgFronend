@@ -3,6 +3,7 @@ import axios from '../Config/axios-baseUrl';
 import Input from '../Components/Input';
 import ax from 'axios';
 import { imdbApiBaseUrl, imdbApiTrailer, imdbApiWikipedia } from '../Config/RouterConfig';
+import swal from 'sweetalert';
 
 class EventDetails extends React.Component {
 
@@ -67,80 +68,155 @@ class EventDetails extends React.Component {
         console.log("evt: ", this.state);
     }
 
-    onExtenedClicked = () => {
-        let path = imdbApiWikipedia(this.state.id)
-        ax.get(path)
-        .then(res =>{
-            this.setState({extenedEng: res.data.plot});
+    onExtendedClicked = () => {
+        swal({
+            title: "Are you sure?",
+            text: "Extended Description will be attached on Event!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
         })
-        .catch(function (){
-            console.log("Check short Eng field!");
+        .then((extended) => {
+            if (extended) {
+                let path = imdbApiWikipedia(this.state.id)
+                ax.get(path)
+                .then(res =>{
+                    this.setState({extenedEng: res.data.plot});
+                })
+                .catch(function (){
+                    console.log("Check short Eng field!");
+                });
+            }
+            else {
+                swal("Action Cancelled!", {
+                    icon: "info"
+                });
+            }
         });
     }
 
     onPosterClicked = () => {
-        let path = imdbApiBaseUrl + this.state.shortEng;
-        console.log(path);
-        ax.get(path)
-        .then(res => {
-            this.setState({
-                poster: res.data.results[0].image,
-                id: res.data.results[0]['id'],
-                pressed: false
-            });
+        swal({
+            title: "Are you sure?",
+            text: "Poster will be attached on Event!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
         })
-        .catch(function (){
-            console.log("Check short Eng field!");
-        });;
+        .then((poster) => {
+            if (poster){
+                let path = imdbApiBaseUrl + this.state.shortEng;
+                console.log(path);
+                ax.get(path)
+                .then(res => {
+                    this.setState({
+                        poster: res.data.results[0].image,
+                        id: res.data.results[0]['id'],
+                        pressed: false
+                    });
+                })
+                .catch(function (){
+                    swal({
+                        icon: "error",
+                        text: "Check short Eng field!"
+                    });
+                });
+            }
+            else{
+                swal("Action Cancelled!", {
+                    icon: "info"
+                });
+            }
+        });
     }
 
     onTrailerClicked = () =>{
-        let path = imdbApiTrailer + this.state.id;
-        console.log(path);
-        ax.get(path)
-        .then(res =>{
-            this.setState({trailer: res.data.linkEmbed});
-            console.log(res.data.linkEmbed);
+        swal({
+            title: "Are you sure?",
+            text: "Trailer will be attached on Event!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
         })
-        .catch(function (){
-            console.log("Check short Eng field!");
-        });;
+        .then((trailer) => {
+            if(trailer){
+                let path = imdbApiTrailer + this.state.id;
+                console.log(path);
+                ax.get(path)
+                .then(res =>{
+                    this.setState({trailer: res.data.linkEmbed});
+                })
+                .catch(function (){
+                    swal({
+                        icon: "error",
+                        text: "Check short Eng field!"
+                    });
+                });
+            }
+            else{
+                swal("Action Cancelled!", {
+                    icon: "info"
+                });
+            }
+        });
     }
 
     onSubmit = () => {
         const id = this.props.match.params.name;
-        console.log(this.state);
-        let data = new FormData();
-        data.append('id', id);
-        data.append('eid', this.state.eid);
-        data.append('starttime', this.state.start_time);
-        data.append('duration', this.state.duration);
-        data.append('CdNibble1', this.state.nibble1);
-        data.append('CdNibble2', this.state.nibble2);
-        data.append('PrdCountryCode', this.state.country_code);
-        data.append('Prd', this.state.parental);
-        data.append('ShortAlb', this.state.shortAlb);
-        data.append('ShortEng', this.state.shortEng);
-        data.append('ExtendedAlb', this.state.extendedAlb);
-        data.append('ExtendedEng', this.state.extenedEng);
-        data.append('Poster', this.state.poster);
-        data.append('Trailer', this.state.trailer);
-
-        var config = {
-            method: 'post',
-            url: '/tvaepg/update/' + id,
-            headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
-            },
-            "Content-Type": "application/xml; charset=utf-8",
-            data: data
-        };
-        axios(config)
-        .then(res =>{
-            console.log(res.data);
+        swal({
+            title: "Are you sure?",
+            text: "Trailer will be attached on Event!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
         })
-        .catch(function (error){
-            console.log(error);
+        .then((submit) => {
+            if(submit){
+                console.log(this.state);
+                let data = new FormData();
+                data.append('id', id);
+                data.append('eid', this.state.eid);
+                data.append('starttime', this.state.start_time);
+                data.append('duration', this.state.duration);
+                data.append('CdNibble1', this.state.nibble1);
+                data.append('CdNibble2', this.state.nibble2);
+                data.append('PrdCountryCode', this.state.country_code);
+                data.append('Prd', this.state.parental);
+                data.append('ShortAlb', this.state.shortAlb);
+                data.append('ShortEng', this.state.shortEng);
+                data.append('ExtendedAlb', this.state.extendedAlb);
+                data.append('ExtendedEng', this.state.extenedEng);
+                data.append('Poster', this.state.poster);
+                data.append('Trailer', this.state.trailer);
+
+                var config = {
+                    method: 'post',
+                    url: '/tvaepg/update/' + id,
+                    headers: { 
+                        'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                    },
+                    "Content-Type": "application/xml; charset=utf-8",
+                    data: data
+                };
+                axios(config)
+                .then(res =>{
+                    swal({
+                        icon: "success",
+                        text: res.data
+                    });
+                })
+                .catch(function (error){
+                    swal({
+                        icon: "error",
+                        text: error
+                    });
+                });
+            }
+            else{
+                swal("Action Cancelled!", {
+                    icon: "info"
+                });
+            }
         });
     }
 
@@ -251,7 +327,7 @@ class EventDetails extends React.Component {
                             labeled={'Extended Eng'}
                             type="button"
                             id={'extenedEng'}
-                            clicked={this.onExtenedClicked}
+                            clicked={this.onExtendedClicked}
                             value={this.state.extenedEng}
                             changed={this.onChangeHandle}
                             disabled={this.state.pressed || this.state.pressed}

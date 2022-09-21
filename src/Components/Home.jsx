@@ -4,6 +4,7 @@ import SmartList from '../Components/SmartList';
 import axios from '../Config/axios-baseUrl';
 import Input from '../Components/Input';
 import Spinner from '../Helper/Spinner';
+import {testFromat} from '../Config/RouterConfig';
 
 class Home extends React.Component {
 
@@ -91,6 +92,11 @@ class Home extends React.Component {
     }
 
     render(){
+        const styled = {
+            paddingTop: 2,
+            height: 32
+        };
+        console.log(testFromat);
         //console.log(Object(this.state.channels[0]).title);
         let smartlist = null;
         if(this.state.loading){
@@ -122,7 +128,7 @@ class Home extends React.Component {
                         <div className="col-sm-8">
                             <Input
                                 styled={{height: 32}}
-                                bstyled={{height: 32}}
+                                bstyled={styled}
                                 elementType={'textbutton'}
                                 className={'btn btn-outline-info'}
                                 labeled={'Search'}

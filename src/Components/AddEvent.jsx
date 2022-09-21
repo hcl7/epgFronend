@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from '../Components/Input';
 import axios from '../Config/axios-baseUrl';
+import swal from 'sweetalert';
 
 class AddEvent extends React.Component{
     state = {
@@ -71,38 +72,64 @@ class AddEvent extends React.Component{
     }
 
     addEventHandler = () =>{
-        const fdata = new FormData();
-        fdata.append('eid', this.state.eid);
-        fdata.append('starttime', this.state.start_time);
-        fdata.append('duration', this.state.duration);
-        fdata.append('CdNibble1', this.state.nibble1);
-        fdata.append('CdNibble2', this.state.nibble2);
-        fdata.append('PrdCountryCode', this.state.country_code);
-        fdata.append('Prd', this.state.parental);
-        fdata.append('ShortAlb', this.state.shortAlb);
-        fdata.append('ShortEng', this.state.shortEng);
-        fdata.append('ExtendedAlb', this.state.extendedAlb);
-        fdata.append('ExtendedEng', this.state.extenedEng);
-        fdata.append('Channel', this.state.channels);
-        fdata.append('Status', 0);
-
-        var config = {
-            method: 'post',
-            url: '/tvaepg/insert',
-            data: fdata,
-            headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
-            },
-            "Content-Type": "application/xml; charset=utf-8"
-        };
-        axios(config)
-            .then(function (response){
-                console.log(response);
-            })
-            .catch(function (error){
-                console.log(error);
+        swal({
+            title: "Are you sure?",
+            text: "New Event will be Added!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((Added) => {
+            if (Added) {
+                if (this.state.shortEng !== ''){
+                    const fdata = new FormData();
+                    fdata.append('eid', this.state.eid);
+                    fdata.append('starttime', this.state.start_time);
+                    fdata.append('duration', this.state.duration);
+                    fdata.append('CdNibble1', this.state.nibble1);
+                    fdata.append('CdNibble2', this.state.nibble2);
+                    fdata.append('PrdCountryCode', this.state.country_code);
+                    fdata.append('Prd', this.state.parental);
+                    fdata.append('ShortAlb', this.state.shortAlb);
+                    fdata.append('ShortEng', this.state.shortEng);
+                    fdata.append('ExtendedAlb', this.state.extendedAlb);
+                    fdata.append('ExtendedEng', this.state.extenedEng);
+                    fdata.append('Channel', this.state.selectedChannel);
+                    fdata.append('Status', 0);
+        
+                    var config = {
+                        method: 'post',
+                        url: '/tvaepg/insert',
+                        data: fdata,
+                        headers: { 
+                            'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                        },
+                        "Content-Type": "application/xml; charset=utf-8"
+                    };
+                    axios(config)
+                        .then(function (response){
+                            swal({
+                                icon: "success",
+                                text: response
+                            });
+                        })
+                        .catch(function (error){
+                            swal({
+                                icon: "error",
+                                text: error
+                            });
+                        }
+                    );
+                }
             }
-        );
+            else {
+                swal("Action Cancelled!", {
+                    icon: "info"
+                });
+            }
+        });
+
+        
     }
 
     render(){
