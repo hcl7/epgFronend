@@ -1,5 +1,5 @@
 import React from 'react';
-import {slShort_event_descriptor} from '../Config/RouterConfig';
+import {slShort_event_descriptor, TVepgExportHead, TVepgExportBody} from '../Config/RouterConfig';
 import SmartList from '../Components/SmartList';
 import axios from '../Config/axios-baseUrl';
 import Input from '../Components/Input';
@@ -81,6 +81,7 @@ class Export extends React.Component{
     }
 
     render(){
+        console.log(TVepgExportHead(this.state.selectedChannel));
         console.log(this.state);
         let smartlist = null;
         if(this.state.loading){

@@ -4,7 +4,6 @@ import SmartList from '../Components/SmartList';
 import axios from '../Config/axios-baseUrl';
 import Input from '../Components/Input';
 import Spinner from '../Helper/Spinner';
-import {testFromat} from '../Config/RouterConfig';
 
 class Home extends React.Component {
 
@@ -91,13 +90,12 @@ class Home extends React.Component {
         this.getEpgs(this.state.selectedChannel, this.state.squery);
     }
 
-    render(){
+    render(){     
         const styled = {
             paddingTop: 2,
             height: 32
         };
-        console.log(testFromat);
-        //console.log(Object(this.state.channels[0]).title);
+        
         let smartlist = null;
         if(this.state.loading){
             smartlist = (
