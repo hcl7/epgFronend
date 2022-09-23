@@ -8,6 +8,7 @@ import EventDetails from './Components/EventDetails';
 import AddEvent from './Components/AddEvent';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Export from './Components/Export.jsx';
+import Footer from './Components/Footer';
 
 class App extends Component {
   render(){
@@ -21,6 +22,7 @@ class App extends Component {
           <Route path='/add/event' component={AddEvent} />
           <Route path='/export/' component={Export} />
         </Switch>
+        <Footer />
       </Router>
       </React.StrictMode>
     );

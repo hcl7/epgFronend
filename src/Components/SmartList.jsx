@@ -17,7 +17,7 @@ class SmartList extends Component {
     render() {
         epg = this.props.smartListContents;
         return (
-            <div className='container-fluid'>
+            <div className='container'>
                 <table className="table table-bordered table-dark">
                     <thead>
                         <tr>

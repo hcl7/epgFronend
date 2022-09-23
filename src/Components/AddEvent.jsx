@@ -133,6 +133,7 @@ class AddEvent extends React.Component{
     }
 
     render(){
+        console.log(this.state.selectedChannel);
         return (
             <div className="container bg-dark">
                 <div className="row">

@@ -90,7 +90,8 @@ class Home extends React.Component {
         this.getEpgs(this.state.selectedChannel, this.state.squery);
     }
 
-    render(){     
+    render(){
+        console.log(this.state.selectedChannel);
         const styled = {
             paddingTop: 2,
             height: 32
