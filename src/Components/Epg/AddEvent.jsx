@@ -1,6 +1,6 @@
 import React from 'react';
-import Input from '../Components/Input';
-import axios from '../Config/axios-baseUrl';
+import Input from '../../Components/Input'
+import axios from '../../Config/axios-baseUrl';
 import swal from 'sweetalert';
 
 class AddEvent extends React.Component{

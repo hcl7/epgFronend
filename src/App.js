@@ -1,44 +1,55 @@
 import React, { Component } from 'react';
-import Head from './Components/Head.jsx';
-import './App.css';
 import { connect } from 'react-redux';
-//import * as actions from './store/actions';
+import './App.css';
 import Home from './Components/Home';
-import EventDetails from './Components/EventDetails';
-import AddEvent from './Components/AddEvent';
+import EventDetails from './Components/Epg/EventDetails';
+import AddEvent from './Components/Epg/AddEvent';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import Export from './Components/Export.jsx';
-import Footer from './Components/Footer';
+import Export from './Components/Epg/Export.jsx';
+import Login from './Components/Login';
+import Logout from './Components/Logout';
+import Layout from './hoc/Layout';
+import {checkAuthState} from './store/authSlice';
 
 class App extends Component {
+  componentDidMount(){
+    this.props.checkAuthState();
+  }
   render(){
-    return (
-      <React.StrictMode>
-      <Router>
-        <Head />
+    let routes = null;
+    console.log('[App] isAuthenticated: ', this.props.isAuthenticated);
+    console.log('[App] authRedirectPath: ', this.props.authRedirectPath);
+    if(!this.props.isAuthenticated){
+      routes = <Route path='/login' component={Login} />
+    }
+    else {
+      routes = (
         <Switch>
           <Route path='/' exact component={Home} />
           <Route path='/details/:name' component={EventDetails} />
           <Route path='/add/event' component={AddEvent} />
           <Route path='/export/' component={Export} />
+          <Route path='/logout' component={Logout} />
         </Switch>
-        <Footer />
-      </Router>
+      )
+    };
+
+    return (
+      <React.StrictMode>
+        <div>
+          <Layout>
+            {routes}   
+          </Layout>
+        </div>
       </React.StrictMode>
     );
   } 
 }
 
-const mapStateToProps = state => {
-  return {
-    isAuthenticated: state.token !== null
-  };
-};
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  authRedirectPath: state.auth.authRedirectPath
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    //onAuthCheckState: () => dispatch(actions.authCheckState())
-  };
-};
-
-export default connect(mapStateToProps,mapDispatchToProps)(App);
+const mapDispatchToProps = {checkAuthState};
+export default connect(mapStateToProps, mapDispatchToProps)(App);

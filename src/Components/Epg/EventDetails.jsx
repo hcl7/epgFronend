@@ -1,8 +1,8 @@
 import React from 'react';
-import axios from '../Config/axios-baseUrl';
-import Input from '../Components/Input';
+import axios from '../../Config/axios-baseUrl';
+import Input from '../../Components/Input';
 import ax from 'axios';
-import { imdbApiBaseUrl, imdbApiTrailer, imdbApiWikipedia } from '../Config/RouterConfig';
+import { imdbApiBaseUrl, imdbApiTrailer, imdbApiWikipedia } from '../../Config/RouterConfig';
 import swal from 'sweetalert';
 
 class EventDetails extends React.Component {

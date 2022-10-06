@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import Auxiliary from '../hoc/Auxiliary';
 import {slShort_event_descriptor} from '../Config/RouterConfig';
 import SmartList from '../Components/SmartList';
 import axios from '../Config/axios-baseUrl';
 import Input from '../Components/Input';
 import Spinner from '../Helper/Spinner';
+import { Redirect } from 'react-router-dom';
 
 class Home extends React.Component {
 
@@ -91,7 +94,11 @@ class Home extends React.Component {
     }
 
     render(){
-        console.log(this.state.selectedChannel);
+        let redirect = null;
+        if (this.props.isAuthenticated){
+            redirect =  (<Redirect to='/' />);
+        }
+        console.log('Home message: ',this.props.message);
         const styled = {
             paddingTop: 2,
             height: 32
@@ -113,7 +120,8 @@ class Home extends React.Component {
             />
         }
         return(
-            <React.StrictMode>
+            <Auxiliary>
+                {/* {redirect} */}
                 <div className="container">
                     <div className="row">
                         <div className="col-sm-2">
@@ -150,9 +158,15 @@ class Home extends React.Component {
                     </div>
                 </div>
                 {smartlist}
-            </React.StrictMode>
+            </Auxiliary>
         );
     }
 }
 
-export default Home;
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    authRedirectPath: state.auth.authRedirectPath,
+    message: state.auth.message
+});
+
+export default connect(mapStateToProps)(Home);
