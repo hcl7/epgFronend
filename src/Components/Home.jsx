@@ -37,7 +37,7 @@ class Home extends React.Component {
             method: 'post',
             url: '/tvaepg/view',
             headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                'ApiKey': this.props.apiKey
             },
             "Content-Type": "application/xml; charset=utf-8",
             data: data
@@ -55,7 +55,7 @@ class Home extends React.Component {
             method: 'post',
             url: '/channels/view',
             headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                'ApiKey': this.props.apiKey
             },
             "Content-Type": "application/xml; charset=utf-8"
         };
@@ -129,7 +129,7 @@ class Home extends React.Component {
                                 icon={'add'}
                                 view={'add'}
                                 where={'event'}
-                                styled={{height:32}}
+                                styled={{height:34}}
                             />
                         </div>
                         <div className="col-sm-8">
@@ -166,7 +166,8 @@ class Home extends React.Component {
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
     authRedirectPath: state.auth.authRedirectPath,
-    message: state.auth.message
+    message: state.auth.message,
+    apiKey: state.auth.apiKey
 });
 
 export default connect(mapStateToProps)(Home);

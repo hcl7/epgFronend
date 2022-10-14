@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Input from '../../Components/Input'
 import axios from '../../Config/axios-baseUrl';
 import swal from 'sweetalert';
@@ -30,7 +31,6 @@ class AddEvent extends React.Component{
 
     onChangeHandle = (evt) =>{
         this.setState({[evt.target.name]: evt.target.value});
-        console.log("evt: ", this.state);
     }
 
     onChangedSelectedChannel = (e) =>{
@@ -50,7 +50,7 @@ class AddEvent extends React.Component{
             method: 'post',
             url: '/channels/all',
             headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                'ApiKey': this.props.apiKey
             },
             "Content-Type": "application/xml; charset=utf-8"
         };
@@ -102,7 +102,7 @@ class AddEvent extends React.Component{
                         url: '/tvaepg/insert',
                         data: fdata,
                         headers: { 
-                            'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                            'ApiKey': this.props.apiKey
                         },
                         "Content-Type": "application/xml; charset=utf-8"
                     };
@@ -299,4 +299,11 @@ class AddEvent extends React.Component{
     }
 }
 
-export default AddEvent;
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    authRedirectPath: state.auth.authRedirectPath,
+    message: state.auth.message,
+    apiKey: state.auth.apiKey
+});
+
+export default connect(mapStateToProps)(AddEvent);

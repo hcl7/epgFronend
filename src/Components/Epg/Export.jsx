@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {slShort_event_descriptor, TVepgExportHead, TVepgExportBody} from '../../Config/RouterConfig';
 import SmartList from '../../Components/SmartList';
 import axios from '../../Config/axios-baseUrl';
@@ -23,7 +24,7 @@ class Export extends React.Component{
             method: 'post',
             url: '/channels/view',
             headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                'ApiKey': this.props.apiKey
             },
             "Content-Type": "application/xml; charset=utf-8"
         };
@@ -63,7 +64,7 @@ class Export extends React.Component{
             method: 'post',
             url: '/tvaepg/listexport',
             headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                'ApiKey': this.props.apiKey
             },
             "Content-Type": "application/xml; charset=utf-8",
             data: data
@@ -81,6 +82,10 @@ class Export extends React.Component{
     }
 
     render(){
+        const xmlStyle = {
+            height: '32px',
+            width: '32px'
+        }
         console.log(TVepgExportHead(this.state.selectedChannel));
         console.log(this.state);
         let smartlist = null;
@@ -104,8 +109,9 @@ class Export extends React.Component{
                 <div className="row">
                     <div className="col-sm-2">
                         <Input elementType={'button'}
+                            class={"btn btn-outline-secondary"}
                             icon={'xml'}
-                            styled={{height:32}}
+                            styled={xmlStyle}
                             clicked={this.onExport}
                         />
                     </div>                    
@@ -126,4 +132,11 @@ class Export extends React.Component{
     }
 }
 
-export default Export;
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    authRedirectPath: state.auth.authRedirectPath,
+    message: state.auth.message,
+    apiKey: state.auth.apiKey
+});
+
+export default connect(mapStateToProps)(Export);

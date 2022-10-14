@@ -10,6 +10,7 @@ import Login from './Components/Login';
 import Logout from './Components/Logout';
 import Layout from './hoc/Layout';
 import {checkAuthState} from './store/authSlice';
+import Signup from './Components/Signup';
 
 class App extends Component {
   componentDidMount(){
@@ -20,7 +21,12 @@ class App extends Component {
     console.log('[App] isAuthenticated: ', this.props.isAuthenticated);
     console.log('[App] authRedirectPath: ', this.props.authRedirectPath);
     if(!this.props.isAuthenticated){
-      routes = <Route path='/login' component={Login} />
+      routes = (
+      <Switch>
+        <Route path='/login' exact component={Login} />
+        <Route path='/signup' component={Signup} />
+      </Switch>
+      )
     }
     else {
       routes = (

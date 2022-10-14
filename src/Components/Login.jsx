@@ -25,6 +25,7 @@ class Login extends React.Component {
     }
 
     validatePass = () => {
+        //const { password } = this.state;
         let passValid = true;
         let errorMsg = { ...this.state.errorMsg };
 
@@ -66,7 +67,7 @@ class Login extends React.Component {
             redirect = <Redirect to={this.state.redirect} />
         }
         return (
-            <div className="row justify-content-center" style={{ marginTop: '40px'}}>
+            <div className="row justify-content-center">
                 {redirect}
                 <div className="col-sm-4 shadow rounded-5 my-4">
                     <form style={{marginBottom: '30px', marginTop: '20px'}}>

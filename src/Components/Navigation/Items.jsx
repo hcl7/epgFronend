@@ -8,7 +8,11 @@ const items = (props) => (
                 <Item link={'/'} exact>Home</Item>
                 <Item link={'/export'}>Export</Item>
                 <Item link={'/logout'}>Logout</Item>
-            </div>) : <Item link={'/login'} exact>Login</Item>
+            </div>) : 
+            (<div className="collapse navbar-collapse">
+                <Item link={'/login'} exact>Login</Item>
+                <Item link={'/signup'}>Signup</Item>
+            </div>)
         }
     </ul>
 );

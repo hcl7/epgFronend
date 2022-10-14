@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import axios from '../../Config/axios-baseUrl';
 import Input from '../../Components/Input';
 import ax from 'axios';
@@ -34,7 +35,7 @@ class EventDetails extends React.Component {
             method: 'get',
             url: '/tvaepg/detail/' + id,
             headers: { 
-                'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                'ApiKey': this.props.apiKey
             },
             "Content-Type": "application/xml; charset=utf-8"
         };
@@ -193,7 +194,7 @@ class EventDetails extends React.Component {
                     method: 'post',
                     url: '/tvaepg/update/' + id,
                     headers: { 
-                        'ApiKey': 'JeZAmgId4jLDHT3ipaf7uT0P'
+                        'ApiKey': this.props.apiKey
                     },
                     "Content-Type": "application/xml; charset=utf-8",
                     data: data
@@ -377,4 +378,11 @@ class EventDetails extends React.Component {
     }
 }
 
-export default EventDetails;
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    authRedirectPath: state.auth.authRedirectPath,
+    message: state.auth.message,
+    apiKey: state.auth.apiKey
+});
+
+export default connect(mapStateToProps)(EventDetails);

@@ -7,6 +7,10 @@ export const Config = {
         alt:"Digitalb Logo"
 	},
     container:{
-        style:{backgroundColor:'#E60004', borderRadius:"0px 0px 10px 10px"}
+        style: {
+            backgroundColor:'#E60004', 
+            borderRadius:"0px 0px 10px 10px",
+            // marginBottom: '30px'
+        }
     }
 };

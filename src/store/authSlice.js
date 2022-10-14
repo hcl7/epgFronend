@@ -11,12 +11,14 @@ export const authSlice = createSlice({
         isAuthenticated: false,
         authRedirectPath: '/login',
         message: '',
+        apiKey: '',
     },
     reducers: {
         logout: (state) => {
             try{
                 localStorage.removeItem('token');
                 localStorage.removeItem('userId');
+                localStorage.removeItem('apikey');
                 axios.post('/auth/logout')
                 .then(function (response) {
                     console.log(response.data.message);
@@ -39,12 +41,16 @@ export const authSlice = createSlice({
             if(action.payload.jwt !== null){
                 state.token = localStorage.getItem('token');
                 state.userId = localStorage.getItem('userId');
+                state.apiKey = localStorage.getItem('apikey');
                 state.isAuthenticated = true;
                 state.authRedirectPath = '/';
-                state.message = action.payload.message
+                state.message = action.payload.message;
             }
         },
-        checkAuthState: (state) =>{
+        setSignup: (state, action) => {
+            state.message = action.payload.message;
+        },
+        checkAuthState: (state) => {
             const token = localStorage.getItem('token');
             if(!token){
                 state.isAuthenticated = false;
@@ -55,6 +61,7 @@ export const authSlice = createSlice({
                 state.authRedirectPath = '/';
                 state.token = localStorage.getItem('token');
                 state.userId = localStorage.getItem('userId');
+                state.apiKey = localStorage.getItem('apikey');
             }
         }
     }
@@ -77,6 +84,7 @@ export const login = (data) => async (dispatch) =>{
         const response = await axios(config);
         localStorage.setItem('token', response.data.jwt);
         localStorage.setItem('userId', response.data.user.id);
+        localStorage.setItem('apikey', response.data.user.apikey);
         dispatch(setAuth(response.data));
     }
     catch (error){
@@ -84,6 +92,33 @@ export const login = (data) => async (dispatch) =>{
     }
 }
 
-export const { logout, setAuth, checkAuthState } = authSlice.actions;
+export const signup = (data) => async (dispatch) =>{
+    const signupData = JSON.stringify({
+        usr: data.usr,
+        fname: data.fname,
+        lname: data.lname,
+        company: data.company,
+        email: data.email,
+        passwd: data.passwd,
+    });
+    var config = {
+        method: 'post',
+        url: '/auth/register',
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        data : signupData
+    };
+    try{
+        const response = await axios(config);
+        dispatch(setSignup(response.data));
+        console.log(response.data);
+    }
+    catch (error){
+        throw new Error(error);
+    }
+}
+
+export const { logout, setAuth, setSignup, checkAuthState } = authSlice.actions;
 
 export default authSlice.reducer;
