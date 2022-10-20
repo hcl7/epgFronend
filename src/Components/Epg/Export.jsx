@@ -5,6 +5,7 @@ import SmartList from '../../Components/SmartList';
 import axios from '../../Config/axios-baseUrl';
 import Input from '../../Components/Input';
 import Spinner from '../../Helper/Spinner';
+import { UseEmail } from '../../Config/UseEmail';
 
 class Export extends React.Component{
 
@@ -78,7 +79,8 @@ class Export extends React.Component{
     }
 
     onExport = () =>{
-        console.log('exported')
+        UseEmail(TVepgExportHead(this.state.selectedChannel), this.state.selectedChannel + '.xml');
+        console.log('exported');
     }
 
     render(){
@@ -86,7 +88,7 @@ class Export extends React.Component{
             height: '32px',
             width: '32px'
         }
-        console.log(TVepgExportHead(this.state.selectedChannel));
+        
         console.log(this.state);
         let smartlist = null;
         if(this.state.loading){

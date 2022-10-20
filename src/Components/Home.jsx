@@ -95,8 +95,8 @@ class Home extends React.Component {
 
     render(){
         let redirect = null;
-        if (this.props.isAuthenticated){
-            redirect =  (<Redirect to='/' />);
+        if (!this.props.isAuthenticated){
+            redirect =  (<Redirect to={this.props.authRedirectPath} />);
         }
         console.log('Home message: ',this.props.message);
         const styled = {
@@ -121,7 +121,7 @@ class Home extends React.Component {
         }
         return(
             <Auxiliary>
-                {/* {redirect} */}
+                {redirect}
                 <div className="container">
                     <div className="row">
                         <div className="col-sm-2">

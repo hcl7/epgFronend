@@ -1,5 +1,6 @@
 import axios from '../Config/axios-baseUrl';
 import { createSlice } from "@reduxjs/toolkit";
+import { updateObject } from '../hoc/utility';
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -30,21 +31,24 @@ export const authSlice = createSlice({
                 state.userId = null;
                 state.isAuthenticated = false;
                 state.authRedirectPath = '/login';
+                state.message = 'Logged Out!';
             }
             catch (err){
                 throw new Error(err);
             }
-            
         },
         setAuth: (state, action) => {
-            console.log('action: ', action.payload);
-            if(action.payload.jwt !== null){
+            if(action.payload.jwt !== undefined){
                 state.token = localStorage.getItem('token');
                 state.userId = localStorage.getItem('userId');
                 state.apiKey = localStorage.getItem('apikey');
                 state.isAuthenticated = true;
                 state.authRedirectPath = '/';
                 state.message = action.payload.message;
+            }
+            else {
+                state.message = action.payload.message;
+                console.log(state.message);
             }
         },
         setSignup: (state, action) => {
@@ -82,10 +86,15 @@ export const login = (data) => async (dispatch) =>{
     };
     try{
         const response = await axios(config);
-        localStorage.setItem('token', response.data.jwt);
-        localStorage.setItem('userId', response.data.user.id);
-        localStorage.setItem('apikey', response.data.user.apikey);
-        dispatch(setAuth(response.data));
+        if(response.data.jwt !== undefined){
+            localStorage.setItem('token', response.data.jwt);
+            localStorage.setItem('userId', response.data.user.id);
+            localStorage.setItem('apikey', response.data.user.apikey);
+            dispatch(setAuth(response.data));           
+        }
+        else{
+            dispatch(setAuth(response.data));
+        }
     }
     catch (error){
         throw new Error(error);

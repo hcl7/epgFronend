@@ -4,6 +4,7 @@ import Input from './Input';
 import { Redirect } from 'react-router-dom';
 import axios from '../Config/axios-baseUrl';
 import { signup } from '../store/authSlice';
+import swal from 'sweetalert';
 
 class Signup extends React.Component {
     state = {
@@ -14,15 +15,14 @@ class Signup extends React.Component {
         errorMsg: {},
         error: '',
         posted: true,
-        channels: [],
-        selectedCompany: '',
+        company: '',
         fname: '',
         lname: '',
         usr: ''
     }
 
     componentDidMount(){
-        this.getChannels();
+        console.log(this.props.history);
     }
 
     validateForm = () => {
@@ -68,7 +68,7 @@ class Signup extends React.Component {
     }
     
     updateEmail = (email) => {
-        this.setState({ email }, this.validateEmail)
+        this.setState({ email }, this.validateEmail);
     }
     
     validateEmail = () => {
@@ -80,37 +80,6 @@ class Signup extends React.Component {
             errorMsg.email = "Invalid email format";
         }
         this.setState({ emailValid, errorMsg }, this.validateForm);
-    }
-
-    getChannels = () =>{
-        var config = {
-            method: 'post',
-            url: '/channels/all',
-            "Content-Type": "application/xml; charset=utf-8"
-        };
-        
-        axios(config).then(res => {
-            let channels = [];
-            res.data.forEach((channel, i) => {
-                channels.push({
-                    id: i, 
-                    title: channel.channel,
-                });
-            });
-            this.setState({channels: channels});
-        });
-    }
-
-    onChangedSelectedCompany = (e) =>{
-        let options = e.target.options;
-        let value = [];
-        for (let i = 0, l = options.length; i < l; i++) {
-            if (options[i].selected) {
-                value.push(this.state.channels[i]);
-            }
-        }
-        console.log("Company Selected: ", value[0].title);
-        this.setState({ selectedCompany: value[0].title });
     }
 
     onChangeHandle = (evt) =>{
@@ -126,6 +95,8 @@ class Signup extends React.Component {
             email: this.state.email,
             passwd: this.state.password
         });
+        console.log('submited: ', this.props.message);
+        this.props.history.push('/accountverification');
     }
 
     render(){
@@ -169,12 +140,11 @@ class Signup extends React.Component {
                         />
                         <Input
                             htmlFor="Company"
-                            placeholder="Company"
-                            elementType="select"
-                            id={'channel'}
-                            optitle={'title'}
-                            options={this.state.channels}
-                            changed={this.onChangedSelectedCompany}
+                            placeholder="Company Name"
+                            elementType="input"
+                            id="company" name="company"
+                            value={this.state.company}
+                            changed={this.onChangeHandle}
                         />
                         <Input
                             htmlFor="Password"

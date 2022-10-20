@@ -11,6 +11,7 @@ import Logout from './Components/Logout';
 import Layout from './hoc/Layout';
 import {checkAuthState} from './store/authSlice';
 import Signup from './Components/Signup';
+import AcountVerification from './Components/AccountVerification';
 
 class App extends Component {
   componentDidMount(){
@@ -25,6 +26,7 @@ class App extends Component {
       <Switch>
         <Route path='/login' exact component={Login} />
         <Route path='/signup' component={Signup} />
+        <Route path='/accountverification' component={AcountVerification} />
       </Switch>
       )
     }

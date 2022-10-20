@@ -8,7 +8,6 @@ class Logout extends Component {
         this.props.logout();
     }
     render() {
-        console.log('[Logout]',this.props.authRedirectPath);
         return <Redirect to={this.props.authRedirectPath} />;
     }
 }

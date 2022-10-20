@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Input from './Input';
-import { Redirect } from 'react-router-dom';
-import { login } from '../store/authSlice';
+import { login,checkAuthState } from '../store/authSlice';
 
 class Login extends React.Component {
   
@@ -13,6 +12,10 @@ class Login extends React.Component {
         errorMsg: {},
         redirect: '/login',
         isSignup: true
+    }
+
+    componentDidMount(){
+        this.props.checkAuthState();
     }
 
     validateForm = () => {
@@ -55,20 +58,15 @@ class Login extends React.Component {
 
     onSubmitHandler = () => {
         this.props.login({email: this.state.email, passwd: this.state.password});
-        this.setState({redirect: this.props.authRedirectPath});
         console.log('[login] isAuthenticated: ', this.props.isAuthenticated);
-        console.log('[login] authRedirectPath: ', this.props.authRedirectPath);
+        console.log('[login] redirect: ', this.props.authRedirectPath);
         console.log('[login] message: ', this.props.message);
+        this.props.history.push('/');
     }
 
     render() {
-        let redirect = null;
-        if(this.props.isAuthenticated){
-            redirect = <Redirect to={this.state.redirect} />
-        }
         return (
             <div className="row justify-content-center">
-                {redirect}
                 <div className="col-sm-4 shadow rounded-5 my-4">
                     <form style={{marginBottom: '30px', marginTop: '20px'}}>
                         <Input
@@ -116,6 +114,6 @@ const mapStateToProps = (state) => ({
     message: state.auth.message
 });
 
-const mapDispatchToProps = { login };
+const mapDispatchToProps = { login, checkAuthState };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
