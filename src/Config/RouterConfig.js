@@ -65,42 +65,52 @@ String.prototype.format = function() {
 export const TVepgExportHead = (channel) => {
   return TVAXMLHead.format(channel);
 }
-export const TVepgExportBody = (id, st, d, sedname, genre, sedename, eeda, eede, n1, n2, rate, ch) => {
-  return TVAXMLBody.format(id, st, d, sedname, genre, sedename, eeda, eede,  n1, n2, rate, ch);
+export const TVepgExportBody = (eid, st, d, sedname, genre, sedename, eeda, eede, n1, n2, rate) => {
+  return TVAXMLBody.format(eid, st, d, sedname, genre, sedename, eeda, eede,  n1, n2, rate);
 }
 
-const TVAXMLHead = '<?xml version="1.0" encoding="ISO-8859-1"?><WIDECAST_DVB>' +
+const TVAXMLHead = '<?xml version="1.0" encoding="ISO-8859-1"?><WIDECAST_DVB>\n' +
 '<channel name="{0}">';
-export const TVAXMLFoot = '</channel></WIDECAST_DVB>';
-const TVAXMLBody = '<Event id="{0}" start_time="{1}" duration="{2}">'+
-  '<short_event_descriptor lang="alb" name="{3}">{4}</short_event_descriptor>'+
-  '<short_event_descriptor lang="eng" name="{5}"></short_event_descriptor>'+
-  '<extended_event_descriptor lang="alb">'+
-    '<text>{6}</text>'+
-  '</extended_event_descriptor>'+
-  '<extended_event_descriptor lang="eng">'+
-    '<text>{7}</text>'+
-  '</extended_event_descriptor>'+
-  '<content_descriptor nibble1="{8}" nibble2="{9}"/>'+
-  '<parental_rating_descriptor country_code="alb">{10}</parental_rating_descriptor>'+
-  '</Event>';
 
-const OTTXMLHead = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE tv SYSTEM "xmltv.dtd">'+
-  '<tv generator-info-name="DigitAlb_Epg">'+
-  '<channel id="11">'+
-    '<display-name>{0}</display-name>'+
-  '</channel>';
-export const OTTXMLFoot = '</tv>';
-const OTTXMLBody = '<programme ID="{0}" start="{1}" stop="{2}" channel="11">'+
-  '<title lang="alb">{3}</title>'+
-  '<original-title lang="eng">{4}</original-title>'+
-  '<desc lang="alb">{5}</desc>'+
-  '<credits />'+
-  '<date />'+
-  '<country />'+
-  '<category />'+
-  '<genres />'+
-  '<icon />'+
-  '<blackout />'+
-  '<disable_catchup />'+
-  '</programme>';
+export const TVAXMLFoot = '</channel></WIDECAST_DVB>\n';
+
+const TVAXMLBody = '<Event id="{0}" start_time="{1}" duration="{2}">\n'+
+  '<short_event_descriptor lang="alb" name="{3}">{4}</short_event_descriptor>\n'+
+  '<short_event_descriptor lang="eng" name="{5}"></short_event_descriptor>\n'+
+  '<extended_event_descriptor lang="alb">\n'+
+    '<text>{6}</text>\n'+
+  '</extended_event_descriptor>\n'+
+  '<extended_event_descriptor lang="eng">\n'+
+    '<text>{7}</text>\n'+
+  '</extended_event_descriptor>\n'+
+  '<content_descriptor nibble1="{8}" nibble2="{9}"/>\n'+
+  '<parental_rating_descriptor country_code="alb">{10}</parental_rating_descriptor>\n'+
+  '</Event>\n';
+
+export const OTTXMLExportHead = (channel) =>{
+  return OTTXMLHead.format(channel);
+}
+const OTTXMLHead = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE tv SYSTEM "xmltv.dtd">\n'+
+  '<tv generator-info-name="DigitAlb_Epg">\n'+
+  '<channel id="11">\n'+
+    '<display-name>{0}</display-name>\n'+
+  '</channel>\n';
+  
+export const OTTXMLFoot = '</tv>\n';
+
+export const OTTXMLExportBody = (id, st, stp, seda, sede, eeda) =>{
+  return OTTXMLBody.format(id, st, stp, seda, sede, eeda);
+}
+const OTTXMLBody = '<programme ID="{0}" start="{1}" stop="{2}" channel="11">\n'+
+  '<title lang="alb">{3}</title>\n'+
+  '<original-title lang="eng">{4}</original-title>\n'+
+  '<desc lang="alb">{5}</desc>\n'+
+  '<credits />\n'+
+  '<date />\n'+
+  '<country />\n'+
+  '<category />\n'+
+  '<genres />\n'+
+  '<icon />\n'+
+  '<blackout />\n'+
+  '<disable_catchup />\n'+
+  '</programme>\n';

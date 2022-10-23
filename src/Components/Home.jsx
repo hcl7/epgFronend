@@ -98,7 +98,7 @@ class Home extends React.Component {
         if (!this.props.isAuthenticated){
             redirect =  (<Redirect to={this.props.authRedirectPath} />);
         }
-        console.log('Home message: ',this.props.message);
+        
         const styled = {
             paddingTop: 2,
             height: 32

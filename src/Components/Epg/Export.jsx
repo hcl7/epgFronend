@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {slShort_event_descriptor, TVepgExportHead, TVepgExportBody} from '../../Config/RouterConfig';
+import {slShort_event_descriptor, TVepgExportHead, TVepgExportBody, TVAXMLFoot} from '../../Config/RouterConfig';
 import SmartList from '../../Components/SmartList';
 import axios from '../../Config/axios-baseUrl';
 import Input from '../../Components/Input';
 import Spinner from '../../Helper/Spinner';
-import { UseEmail } from '../../Config/UseEmail';
+import { XmlFileSaver } from '../../Config/XmlFileSaver';
 
 class Export extends React.Component{
 
@@ -78,8 +78,43 @@ class Export extends React.Component{
         });
     }
 
+    updateStatus = (channel) => {
+        var data = new FormData();
+        data.append('channel', channel);
+        var config = {
+            method: 'post',
+            url: '/tvaepg/statusupdate',
+            headers: { 
+                'ApiKey': this.props.apiKey
+            },
+            "Content-Type": "application/xml; charset=utf-8",
+            data: data
+        };
+        axios(config).then(res => {
+            console.log(res.data);
+        });
+    }
+
     onExport = () =>{
-        UseEmail(TVepgExportHead(this.state.selectedChannel), this.state.selectedChannel + '.xml');
+        let TVEPG = TVepgExportHead(this.state.selectedChannel);
+        this.state.epg && this.state.epg.map((e,i) =>{
+            TVEPG += TVepgExportBody(
+                i,
+                e.startTime,
+                e.duration,
+                e.shortAlb,
+                e.genre,
+                e.shortEng,
+                e.extendedAlb,
+                e.extendedEng,
+                e.cdNibble1,
+                e.cdNibble2,
+                e.rating
+            );
+        });
+        TVEPG += TVAXMLFoot;
+        XmlFileSaver(TVEPG, this.state.selectedChannel + '.xml');
+        this.updateStatus(this.state.selectedChannel);
         console.log('exported');
     }
 
@@ -88,8 +123,7 @@ class Export extends React.Component{
             height: '32px',
             width: '32px'
         }
-        
-        console.log(this.state);
+
         let smartlist = null;
         if(this.state.loading){
             smartlist = (

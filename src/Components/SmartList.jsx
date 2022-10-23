@@ -18,7 +18,7 @@ class SmartList extends Component {
         epg = this.props.smartListContents;
         return (
             <div className='container'>
-                <table className="table table-bordered table-dark">
+                <table className="table table-bordered table-dark table-striped">
                     <thead>
                         <tr>
                             {this.props.smartListHeaders && Array.isArray(this.props.smartListHeaders) && this.props.smartListHeaders.map(slh => (
@@ -45,11 +45,11 @@ class SmartList extends Component {
                                         />
                                     </td> : null
                                 ))}
-                                <td>
+                                <td  style={{verticalAlign: "middle", padding: '10px'}}>
                                     {this.props.action === 'navlink' ? 
-                                    <NavLink className="btn btn-outline-info" style={{verticalAlign: "middle"}} to={this.props.view + '/' + slc[this.props.where]}>{this.props.actionLabel}</NavLink>
+                                    <NavLink className="btn btn-outline-info" to={this.props.view + '/' + slc[this.props.where]}>{this.props.actionLabel}</NavLink>
                                     : this.props.action === 'button' ? 
-                                    <button className="btn btn-outline-danger" style={{verticalAlign: "middle"}} onClick={(e) => this.props.clicked(slc[this.props.where])}>{this.props.actionLabel}</button>
+                                    <button className="btn btn-outline-danger" onClick={(e) => this.props.clicked(slc[this.props.where])}>{this.props.actionLabel}</button>
                                     : null}
                                 </td>
                             </tr>

@@ -9,7 +9,7 @@ import swal from 'sweetalert';
 class EventDetails extends React.Component {
 
     state = {
-        eid: 0,
+        eid: '',
         start_time: '',
         duration: '',
         nibble1: '',
@@ -166,7 +166,7 @@ class EventDetails extends React.Component {
         const id = this.props.match.params.name;
         swal({
             title: "Are you sure?",
-            text: "Trailer will be attached on Event!",
+            text: "Event Will be Updated!",
             icon: "warning",
             buttons: true,
             dangerMode: true,
