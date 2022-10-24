@@ -66,7 +66,6 @@ class EventDetails extends React.Component {
     
     onChangeHandle = (evt) =>{
         this.setState({[evt.target.name]: evt.target.value});
-        console.log("evt: ", this.state);
     }
 
     onExtendedClicked = () => {
@@ -173,7 +172,6 @@ class EventDetails extends React.Component {
         })
         .then((submit) => {
             if(submit){
-                console.log(this.state);
                 let data = new FormData();
                 data.append('id', id);
                 data.append('eid', this.state.eid);

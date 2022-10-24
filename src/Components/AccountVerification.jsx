@@ -13,6 +13,7 @@ const AcountVerification = (props) => {
                     changed={(e) => {
                         const newCode = e.target.value;
                         setCode(newCode);
+                        console.log(newCode)
                     }}
                 />
             </div>

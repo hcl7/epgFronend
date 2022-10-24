@@ -6,13 +6,15 @@ import axios from '../../Config/axios-baseUrl';
 import Input from '../../Components/Input';
 import Spinner from '../../Helper/Spinner';
 import { XmlFileSaver } from '../../Config/XmlFileSaver';
+import swal from 'sweetalert';
 
 class Export extends React.Component{
 
     state = {
         channels: [],
         loading: true,
-        selectedChannel: ''
+        selectedChannel: '',
+        epg: []
     }
 
     componentDidMount() {
@@ -91,31 +93,49 @@ class Export extends React.Component{
             data: data
         };
         axios(config).then(res => {
-            console.log(res.data);
+            swal({
+                icon: "success",
+                text: res.data
+            });   
         });
     }
 
     onExport = () =>{
-        let TVEPG = TVepgExportHead(this.state.selectedChannel);
-        this.state.epg && this.state.epg.map((e,i) =>{
-            TVEPG += TVepgExportBody(
-                i,
-                e.startTime,
-                e.duration,
-                e.shortAlb,
-                e.genre,
-                e.shortEng,
-                e.extendedAlb,
-                e.extendedEng,
-                e.cdNibble1,
-                e.cdNibble2,
-                e.rating
-            );
+        swal({
+            title: "Are you sure?",
+            text: "Events Will be Exported to XML File!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((onExportUpdateStatus) => {
+            if(onExportUpdateStatus){
+                let TVEPG = TVepgExportHead(this.state.selectedChannel);
+                this.state.epg && this.state.epg.map((e,i) =>{
+                    TVEPG += TVepgExportBody(
+                        i,
+                        e.startTime,
+                        e.duration,
+                        e.shortAlb,
+                        e.genre,
+                        e.shortEng,
+                        e.extendedAlb,
+                        e.extendedEng,
+                        e.cdNibble1,
+                        e.cdNibble2,
+                        e.rating
+                    );
+                });
+                TVEPG += TVAXMLFoot;
+                XmlFileSaver(TVEPG, this.state.selectedChannel + '.xml');
+                this.updateStatus(this.state.selectedChannel);
+            }
+            else{
+                swal("Action Cancelled!", {
+                    icon: "info"
+                });
+            }
         });
-        TVEPG += TVAXMLFoot;
-        XmlFileSaver(TVEPG, this.state.selectedChannel + '.xml');
-        this.updateStatus(this.state.selectedChannel);
-        console.log('exported');
     }
 
     render(){
@@ -169,9 +189,6 @@ class Export extends React.Component{
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated,
-    authRedirectPath: state.auth.authRedirectPath,
-    message: state.auth.message,
     apiKey: state.auth.apiKey
 });
 

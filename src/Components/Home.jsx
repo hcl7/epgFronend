@@ -73,7 +73,6 @@ class Home extends React.Component {
                 selectedChannel: Object(channels[0]).title,
                 loading: false
             });
-            console.log('channels: ',this.state.channels);
         });
     }
 
