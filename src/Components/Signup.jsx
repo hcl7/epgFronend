@@ -91,7 +91,7 @@ class Signup extends React.Component {
             usr: this.state.usr,
             fname: this.state.fname,
             lname: this.state.lname,
-            company: this.state.selectedCompany,
+            company: this.state.company,
             email: this.state.email,
             passwd: this.state.password
         });

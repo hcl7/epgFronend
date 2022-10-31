@@ -4,7 +4,7 @@ import './App.css';
 import Home from './Components/Home';
 import EventDetails from './Components/Epg/EventDetails';
 import AddEvent from './Components/Epg/AddEvent';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Export from './Components/Epg/Export.jsx';
 import Login from './Components/Login';
 import Logout from './Components/Logout';

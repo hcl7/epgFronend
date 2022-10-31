@@ -1,6 +1,5 @@
 import axios from '../Config/axios-baseUrl';
 import { createSlice } from "@reduxjs/toolkit";
-import { updateObject } from '../hoc/utility';
 
 export const authSlice = createSlice({
     name: 'auth',

@@ -12,8 +12,8 @@ export const imdbApiTrailer = 'https://imdb-api.com/en/API/Trailer/k_z9yeskhc/';
 export function apiGet(payload){
   axios.get(imdbApiBaseUrl + payload)
   .then(res => {
-       return res.data;
-   });
+    return res.data;
+  });
 }
 
 function Digits(num) {
@@ -23,18 +23,18 @@ function Digits(num) {
 export const currentDate = () => {
   var date = new Date();
   return (
-      [
-        date.getFullYear(),
-        Digits(date.getMonth() + 1),
-        Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
-      [
-        Digits(date.getHours()),
-        Digits(date.getMinutes()),
-        Digits(date.getSeconds()),
-      ].join(':')
-    );
+    [
+      date.getFullYear(),
+      Digits(date.getMonth() + 1),
+      Digits(date.getDate()),
+    ].join('-') +
+    ' ' +
+    [
+      Digits(date.getHours()),
+      Digits(date.getMinutes()),
+      Digits(date.getSeconds()),
+    ].join(':')
+  );
 }
 
 export const onEventHandler = (evt) =>{
@@ -57,7 +57,7 @@ export function sleep(ms) {
 String.prototype.format = function() {
   var s = this, i = arguments.length;
   while (i--) {
-      s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+    s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
   }
   return s;
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Input from './Input';
-import { login,checkAuthState } from '../store/authSlice';
+import { login, checkAuthState } from '../store/authSlice';
 
 class Login extends React.Component {
   
@@ -28,14 +28,14 @@ class Login extends React.Component {
     }
 
     validatePass = () => {
-        //const { password } = this.state;
+        const { password } = this.state;
         let passValid = true;
         let errorMsg = { ...this.state.errorMsg };
 
-        // if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,32}$/.test(password)) {
-        //   passValid = false;
-        //   errorMsg.password = "Password must have Capital Letter, 8 chars minimum, Numbers and Chars!";
-        // }
+        if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,32}$/.test(password)) {
+          passValid = false;
+          errorMsg.password = "Password must have Capital Letter, 8 chars minimum, Numbers and Chars!";
+        }
 
         this.setState({ passValid, errorMsg }, this.validateForm);
     }
