@@ -137,6 +137,31 @@ const textInput = (props) => {
                 </div>
             );
         break;
+        case ('buttontext'):
+            inputElement = (
+                <div className="input-group mb-2">
+                    <div className="input-group-prepend">
+                        <button
+                            style={props.bstyled}
+                            onClick={props.clicked} 
+                            className={props.classes}
+                            id={props.id}
+                            type={props.type}
+                            disabled={props.disabled}
+                            >{props.labeled}
+                        </button>
+                    </div>
+                    <input
+                        style={props.styled}
+                        type="text" 
+                        name={props.name} 
+                        className="form-control" 
+                        onChange={props.changed} 
+                        defaultValue={props.value} 
+                    />
+                </div>
+            );
+        break;
         case ('textlabel'):
             inputElement = (
                 <div className="input-group">
