@@ -114,3 +114,13 @@ const OTTXMLBody = '<programme ID="{0}" start="{1}" stop="{2}" channel="11">\n'+
   '<blackout />\n'+
   '<disable_catchup />\n'+
   '</programme>\n';
+
+  const FilmBoxPremiumHeadOne = '';
+  const FilmBoxPremiumHeadTwo = '';
+  const FilmBoxPremiumHeadThree = '';
+  const FilmBoxPremiumFootOne = '';
+  const FilmBoxPremiumFootTwo = '';
+  const FilmBoxPremiumFootThree = '';
+  const FilmBoxPremiumBodyOne = '';
+  const FilmBoxPremiumBodyTwo = '';
+  const FilmBoxPremiumBodyThree = '';

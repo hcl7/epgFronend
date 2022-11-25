@@ -12,6 +12,7 @@ import Layout from './hoc/Layout';
 import {checkAuthState} from './store/authSlice';
 import Signup from './Components/Signup';
 import AcountVerification from './Components/AccountVerification';
+import SplitImport from './Components/Epg/SplitImport';
 
 class App extends Component {
   componentDidMount(){
@@ -37,6 +38,7 @@ class App extends Component {
           <Route path='/details/:name' component={EventDetails} />
           <Route path='/add/event' component={AddEvent} />
           <Route path='/export/' component={Export} />
+          <Route path='/import/' component={SplitImport} />
           <Route path='/logout' component={Logout} />
         </Switch>
       )
