@@ -1,14 +1,15 @@
-import logo from '../Digitalb_logo.png';
+import logo from '../pafap.png';
 
 export const Config = {
 	logo:{
         img:logo,
         style:{ maxHeight: '80px' },
-        alt:"Digitalb Logo"
+        alt:"pafap Logo"
 	},
     container:{
         style: {
-            backgroundColor:'#E60004', 
+            backgroundColor:'#fff', 
+            color: '#000',
             borderRadius:"0px 0px 10px 10px",
             // marginBottom: '30px'
         }

@@ -22,18 +22,18 @@ class Head extends React.Component{
         console.log('Head isAuthenticated: ', this.props.isAuthenticated);
         console.log('Head authRedirectPath: ', this.props.authRedirectPath);
         return(
-            <nav className="navbar container-fluid navbar-expand-lg py-3" style={Config.container.style}>
-                <div className="container-fluid">
+            <nav className="navbar container" style={Config.container.style}>
+                <div className="container">
                     <NavLink to={'/'}><img src={Config.logo.img} style={Config.logo.style} alt={Config.logo.alt} className='navbar-brand d-inline-block align-middle mr-2' /></NavLink>
                     <div className="collapse navbar-collapse">
                         {this.props.isAuthenticated ? 
                         <ul className="navbar-nav">
-                            <li className="nav-item"><NavLink to={'/'} className='nav-link text-white'>{'Home'}</NavLink></li>
-                            <li className="nav-item"><NavLink to={'/export/'} className='nav-link text-white'>{'Export'}</NavLink></li>
-                            <li className="nav-item"><NavLink to={'/logout'} className='nav-link text-white'>{'Logout'}</NavLink></li>
+                            <li className="nav-item"><NavLink to={'/'} className='nav-link'>{'Home'}</NavLink></li>
+                            <li className="nav-item"><NavLink to={'/export/'} className='nav-link'>{'Export'}</NavLink></li>
+                            <li className="nav-item"><NavLink to={'/logout'} className='nav-link'>{'Logout'}</NavLink></li>
                         </ul> :
                         <ul className="navbar-nav">
-                            <li className="nav-item"><NavLink to={'/login'} className='nav-link text-white'>{'Logout'}</NavLink></li>
+                            <li className="nav-item"><NavLink to={'/login'} className='nav-link'>{'Logout'}</NavLink></li>
                         </ul>
                         }
                     </div>

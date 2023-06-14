@@ -17,6 +17,7 @@ class SplitImport extends React.Component {
         data: [],
         epg: [],
         channels: [],
+        channel: '',
         fileContent: '',
         loading: true
     }
@@ -55,7 +56,7 @@ class SplitImport extends React.Component {
         
         axios(config).then(res => {
             let channels = [];
-            res.data.map((channel, i) => {
+            res.data.forEach((channel, i) => {
                 channels.push({
                     id: i, 
                     title: channel,
@@ -201,7 +202,6 @@ class SplitImport extends React.Component {
         this.collectEpg();
         console.log('epgs: ', epgs);
 
-        let headers = {'Content-Type': 'multipart/form-data'};
         epgs && Array.isArray(epgs) && epgs.forEach((e) =>{
             const fdata = new FormData();
             fdata.append('eid', e.evn.id);
@@ -242,9 +242,11 @@ class SplitImport extends React.Component {
     onFileChange = (event) => {
         event.preventDefault();
         const reader = new FileReader();
+        const channel = event.target.files[0].name.split('.').slice(0, -1).join('.');
+        console.log(channel);
         reader.onload = (event) => {
             const text = event.target.result;
-            this.setState({fileContent: text});
+            this.setState({fileContent: text, channel: channel});
         };
         reader.readAsText(event.target.files[0], 'ISO-8859-1');
     }
